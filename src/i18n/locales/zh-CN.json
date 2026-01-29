@@ -121,6 +121,7 @@
   "table": {
     "title": "表格管理",
     "description": "使用表格展示和管理数据",
+    "searchAndFilter": "搜索与筛选",
     "userList": "用户列表",
     "userListDesc": "使用 Table 组件展示数据",
     "avatar": "头像",
@@ -143,6 +144,7 @@
     "confirmDelete": "确定要删除 {name} 吗？",
     "deleteSuccess": "已成功删除 {name}",
     "showing": "显示第 {from} - {to} 条，共 {total} 条",
+    "currentPageReport": "显示第 {first} 到 {last} 条，共 {totalRecords} 条",
     "noData": "暂无数据",
     "loading": "加载中...",
     "page": "页",

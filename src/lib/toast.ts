@@ -1,27 +1,49 @@
-import { toast as sonnerToast } from 'vue-sonner'
+/**
+ * Toast 通知封装：基于 PrimeVue ToastService
+ * 需在 App.vue 中调用 setToastInstance(useToast()) 初始化
+ */
+import type { ToastServiceMethods } from 'primevue/toastservice'
+
+let toastInstance: ToastServiceMethods | null = null
+
+export function setToastInstance(instance: ToastServiceMethods) {
+  toastInstance = instance
+}
 
 export const toast = {
   success: (message: string, description?: string) => {
-    sonnerToast.success(message, {
-      description,
+    toastInstance?.add({
+      severity: 'success',
+      summary: message,
+      detail: description,
     })
   },
   error: (message: string, description?: string) => {
-    sonnerToast.error(message, {
-      description,
+    toastInstance?.add({
+      severity: 'error',
+      summary: message,
+      detail: description,
     })
   },
   warning: (message: string, description?: string) => {
-    sonnerToast.warning(message, {
-      description,
+    toastInstance?.add({
+      severity: 'warn',
+      summary: message,
+      detail: description,
     })
   },
   info: (message: string, description?: string) => {
-    sonnerToast.info(message, {
-      description,
+    toastInstance?.add({
+      severity: 'info',
+      summary: message,
+      detail: description,
     })
   },
   loading: (message: string) => {
-    return sonnerToast.loading(message)
+    return toastInstance?.add({
+      severity: 'info',
+      summary: message,
+      life: 0,
+    })
   },
 }

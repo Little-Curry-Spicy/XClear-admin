@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-background">
+  <div class="min-h-screen">
     <!-- 移动端顶部栏 -->
-    <header class="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 lg:hidden">
+    <header class="sticky top-0 z-50 flex h-16 items-center gap-4 border-b  px-4 lg:hidden">
       <button @click="sidebarStore.toggleMobile()"
         class="inline-flex items-center justify-center rounded-md p-2 hover:bg-accent">
         <Menu class="h-6 w-6" />
@@ -22,7 +22,7 @@
 
     <!-- 侧边栏 -->
     <aside :class="cn(
-      'fixed inset-y-0 left-0 z-50 border-r bg-background transition-all duration-300 lg:translate-x-0',
+      'fixed inset-y-0 left-0 z-50 border-r  transition-all duration-300 lg:translate-x-0',
       sidebarStore.isExpanded ? 'w-64' : 'w-16',
       sidebarStore.isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
     )">
@@ -44,22 +44,16 @@
           </Transition>
 
           <!-- 桌面端收缩/展开按钮 - 始终在右侧，收缩时使用绝对定位 -->
-          <button
-            @click="sidebarStore.toggle()"
-            :class="cn(
-              'rounded-md hidden items-center justify-center border border-border bg-background p-1.5 hover:bg-accent transition-all duration-300 lg:flex',
-              sidebarStore.isExpanded
-                ? 'ml-auto shrink-0'
-                : 'absolute -right-5 top-1/2 -translate-y-1/2'
-            )"
-            :title="sidebarStore.isExpanded ? '收缩侧边栏' : '展开侧边栏'"
-          >
-            <ChevronLeft
-              :class="cn(
-                'h-4 w-4 transition-transform duration-300',
-                !sidebarStore.isExpanded && 'rotate-180'
-              )"
-            />
+          <button @click="sidebarStore.toggle()" :class="cn(
+            'rounded-md hidden items-center justify-center border border-border bg-background p-1.5 hover:bg-accent transition-all duration-300 lg:flex',
+            sidebarStore.isExpanded
+              ? 'ml-auto shrink-0'
+              : 'absolute -right-5 top-1/2 -translate-y-1/2'
+          )" :title="sidebarStore.isExpanded ? '收缩侧边栏' : '展开侧边栏'">
+            <ChevronLeft :class="cn(
+              'h-4 w-4 transition-transform duration-300',
+              !sidebarStore.isExpanded && 'rotate-180'
+            )" />
           </button>
         </div>
 
@@ -92,25 +86,18 @@
     <!-- 主内容区 -->
     <div :class="cn('transition-all duration-300', sidebarStore.isExpanded ? 'lg:pl-64' : 'lg:pl-16')">
       <!-- 桌面端顶部栏 -->
-      <header class="sticky top-0 z-40 hidden h-16 items-center gap-4 border-b bg-background px-6 lg:flex">
-        <div class="flex-1">
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink as-child>
-                  <router-link to="/">
-                    {{ $t('menu.dashboard') }}
-                  </router-link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>{{ title }}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
+      <header class="sticky top-0 z-40 hidden h-16 items-center gap-4 border-b w-full bg-background lg:flex">
+        <div class="flex-1 flex items-center justify-between">
+          <Breadcrumb :home="breadcrumbHome" :model="breadcrumbItems">
+            <template #item="{ item, props }">
+              <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+                <a :href="href" v-bind="props.action" @click="navigate">{{ item.label }}</a>
+              </router-link>
+              <span v-else>{{ item.label }}</span>
+            </template>
           </Breadcrumb>
-        </div>
-        <LocaleToggle />
+          <LocaleToggle />
+          </div>
       </header>
 
       <!-- 页面内容 -->
@@ -122,31 +109,28 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { Menu, Home, Settings, FileEdit, Table, ChevronLeft } from 'lucide-vue-next'
+import Breadcrumb from 'primevue/breadcrumb'
 import { cn } from '@/lib/utils'
 import SidebarThemeToggle from '@/components/SidebarThemeToggle.vue'
 import LocaleToggle from '@/components/LocaleToggle.vue'
 import { useSidebarStore } from '@/stores/sidebar'
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
 
 export interface AppLayoutProps {
   title?: string
 }
 
-withDefaults(defineProps<AppLayoutProps>(), {
+const props = withDefaults(defineProps<AppLayoutProps>(), {
   title: '仪表盘',
 })
 
 const route = useRoute()
 const sidebarStore = useSidebarStore()
+
+const breadcrumbHome = { icon: 'pi pi-home', route: '/' }
+const breadcrumbItems = computed(() => [{ label: props.title }])
 
 // 菜单项配置
 const menuItems = [

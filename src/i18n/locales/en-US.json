@@ -121,6 +121,7 @@
   "table": {
     "title": "Table Management",
     "description": "Display and manage data with tables",
+    "searchAndFilter": "Search & Filter",
     "userList": "User List",
     "userListDesc": "Display data using Table component",
     "avatar": "Avatar",
@@ -143,6 +144,7 @@
     "confirmDelete": "Are you sure you want to delete {name}?",
     "deleteSuccess": "Successfully deleted {name}",
     "showing": "Showing {from} - {to} of {total} items",
+    "currentPageReport": "Showing {first} to {last} of {totalRecords} entries",
     "noData": "No Data",
     "loading": "Loading...",
     "page": "Page",

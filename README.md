@@ -1,18 +1,17 @@
 # XClear Admin - 后台管理系统
 
-一个基于 Vue3 + Vite + TypeScript 构建的现代化后台管理系统，使用 Tailwind CSS 和 shadcn-vue 组件库，完全适配移动端，支持主题切换和主题色自定义。
+一个基于 Vue3 + Vite + TypeScript 构建的现代化后台管理系统，使用 Tailwind CSS 和 **PrimeVue** 组件库，完全适配移动端，支持主题切换。
 
 ## ✨ 特性
 
 - 🚀 **Vue 3 + Vite + TypeScript** - 使用最新的前端技术栈
 - 🎨 **Tailwind CSS** - 实用优先的 CSS 框架
-- 🧩 **shadcn-vue** - 高质量的 Vue 组件库
+- 🧩 **PrimeVue** - 功能丰富的 Vue UI 组件库（Toast、ConfirmDialog、Panel、Button、Select 等）
 - 📱 **响应式设计** - 完美适配移动端和桌面端
-- 🌓 **主题切换** - 支持系统/浅色/深色三种模式
-- 🎨 **主题色自定义** - 支持 6 种主题色选择（蓝、绿、紫、橙、红、粉）
+- 🌓 **主题切换** - 支持浅色/深色模式
 - 🌍 **多语言支持** - 内置中文和英文，易于扩展
-- 📊 **Table 组件** - 功能完整的数据表格组件
-- 📝 **Form 表单** - 完整的表单组件库（Input、Textarea、Select 等）
+- 📊 **Table 组件** - 自定义数据表格 + PrimeVue Paginator
+- 📝 **Form 表单** - PrimeVue InputText、Textarea、Select、Panel
 - 📦 **组件化架构** - 基于 SOLID 原则设计，易于扩展
 - 🔥 **TypeScript** - 完整的类型支持
 
@@ -24,7 +23,7 @@ XClear-admin/
 │   ├── assets/          # 静态资源
 │   │   └── css/         # 全局样式
 │   ├── components/      # 组件
-│   │   ├── ui/          # 基础 UI 组件（shadcn-vue 风格）
+│   │   ├── ui/          # 自定义 Table 等（其余使用 PrimeVue）
 │   │   ├── layout/      # 布局组件
 │   │   └── ThemeToggle.vue  # 主题切换组件
 │   ├── layouts/         # 布局页面
@@ -76,24 +75,15 @@ npm run preview
 
 ## 🎨 主题系统
 
-### 主题模式
+界面采用 **shadcn 风格的黑白中性色**，主色与强调色均为黑/白/灰，无彩色主题色切换。
 
-系统支持三种主题模式：
+### 主题模式
 
 - **system** - 跟随系统设置（默认）
 - **light** - 浅色模式
 - **dark** - 深色模式
 
-### 主题色
-
-支持 6 种主题色选择：
-
-- 🔵 蓝色（默认）
-- 🟢 绿色
-- 🟣 紫色
-- 🟠 橙色
-- 🔴 红色
-- 🩷 粉色
+在 **设置 → 外观设置** 中可切换上述模式。深色模式下 PrimeVue 卡片/面板会随页面一起变暗。
 
 ### 使用方法
 
@@ -105,11 +95,8 @@ import { useThemeStore } from '@/stores/theme'
 
 const themeStore = useThemeStore()
 
-// 切换主题模式
+// 切换主题模式（light / dark）
 themeStore.setThemeMode('dark')
-
-// 切换主题色
-themeStore.setThemeColor('purple')
 </script>
 ```
 
@@ -139,63 +126,41 @@ themeStore.setThemeColor('purple')
 
 ## 🧩 组件使用
 
-### Button 组件
+本项目使用 **PrimeVue** 作为 UI 库，Toast 通知由 PrimeVue Toast 提供（已替代原 vue-sonner），确认对话框使用 PrimeVue ConfirmDialog。
+
+### Button、Panel、InputText、Select 等
+
+直接从 `primevue/*` 按需引入，例如：
 
 ```vue
 <template>
-  <Button variant="default" size="default">按钮</Button>
-  <Button variant="outline" size="sm">轮廓按钮</Button>
-  <Button variant="ghost" size="lg">幽灵按钮</Button>
+  <Button label="提交" icon="pi pi-check" />
+  <Panel header="标题">
+    内容
+  </Panel>
+  <InputText v-model="value" placeholder="请输入" />
+  <Select v-model="selected" :options="options" option-label="label" option-value="value" />
 </template>
 
 <script setup lang="ts">
-import Button from '@/components/ui/Button.vue'
+import Button from 'primevue/button'
+import Panel from 'primevue/panel'
+import InputText from 'primevue/inputtext'
+import Select from 'primevue/select'
 </script>
 ```
 
-**Props:**
-- `variant`: `'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'`
-- `size`: `'default' | 'sm' | 'lg' | 'icon'`
+### Toast 通知
 
-### Card 组件
+通过 `@/lib/toast` 统一调用（底层为 PrimeVue ToastService）：
 
 ```vue
-<template>
-  <Card>
-    <CardHeader>
-      <CardTitle>标题</CardTitle>
-    </CardHeader>
-    <CardContent>
-      内容区域
-    </CardContent>
-  </Card>
-</template>
-
 <script setup lang="ts">
-import Card from '@/components/ui/Card.vue'
-import CardHeader from '@/components/ui/CardHeader.vue'
-import CardTitle from '@/components/ui/CardTitle.vue'
-import CardContent from '@/components/ui/CardContent.vue'
-</script>
-```
+import { toast } from '@/lib/toast'
 
-### DropdownMenu 组件
-
-```vue
-<template>
-  <DropdownMenu>
-    <template #trigger>
-      <Button>打开菜单</Button>
-    </template>
-    <DropdownMenuItem @click="handleClick">选项 1</DropdownMenuItem>
-    <DropdownMenuItem @click="handleClick">选项 2</DropdownMenuItem>
-  </DropdownMenu>
-</template>
-
-<script setup lang="ts">
-import DropdownMenu from '@/components/ui/DropdownMenu.vue'
-import DropdownMenuItem from '@/components/ui/DropdownMenuItem.vue'
-import Button from '@/components/ui/Button.vue'
+toast.success('操作成功')
+toast.error('操作失败', '详细说明')
+toast.info('提示信息')
 </script>
 ```
 
@@ -242,97 +207,9 @@ const tableData = [
 **Slots:**
 - `cell-{columnKey}` - 自定义单元格内容
 
-### Form 表单组件
+### Form 表单
 
-```vue
-<template>
-  <Form @submit="handleSubmit">
-    <FormItem :error="errors.name">
-      <Label for="name" :required="true">姓名</Label>
-      <Input
-        id="name"
-        v-model="formData.name"
-        placeholder="请输入姓名"
-        :error="!!errors.name"
-      />
-    </FormItem>
-
-    <FormItem :error="errors.email">
-      <Label for="email" :required="true">邮箱</Label>
-      <Input
-        id="email"
-        v-model="formData.email"
-        type="email"
-        :error="!!errors.email"
-      />
-    </FormItem>
-
-    <FormItem>
-      <Label for="description">描述</Label>
-      <Textarea
-        id="description"
-        v-model="formData.description"
-        placeholder="请输入描述"
-      />
-    </FormItem>
-
-    <Button type="submit">提交</Button>
-  </Form>
-</template>
-
-<script setup lang="ts">
-import Form from '@/components/ui/Form.vue'
-import FormItem from '@/components/ui/FormItem.vue'
-import Label from '@/components/ui/Label.vue'
-import Input from '@/components/ui/Input.vue'
-import Textarea from '@/components/ui/Textarea.vue'
-import Button from '@/components/ui/Button.vue'
-</script>
-```
-
-**Form 组件 Props:**
-- `onSubmit`: `(event: Event) => void` - 提交回调
-
-**FormItem 组件 Props:**
-- `error`: `string` - 错误信息
-- `description`: `string` - 描述信息
-
-**Input/Textarea 组件 Props:**
-- `modelValue`: `string | number` - 绑定值
-- `type`: `string` - 输入类型（Input）
-- `placeholder`: `string` - 占位符
-- `disabled`: `boolean` - 禁用状态
-- `required`: `boolean` - 必填
-- `error`: `boolean` - 错误状态
-- `rows`: `number` - 行数（Textarea）
-
-### Card 组件系列
-
-```vue
-<template>
-  <Card>
-    <CardHeader>
-      <CardTitle>标题</CardTitle>
-      <CardDescription>描述信息</CardDescription>
-    </CardHeader>
-    <CardContent>
-      内容区域
-    </CardContent>
-    <CardFooter>
-      底部操作区域
-    </CardFooter>
-  </Card>
-</template>
-
-<script setup lang="ts">
-import Card from '@/components/ui/Card.vue'
-import CardHeader from '@/components/ui/CardHeader.vue'
-import CardTitle from '@/components/ui/CardTitle.vue'
-import CardDescription from '@/components/ui/CardDescription.vue'
-import CardContent from '@/components/ui/CardContent.vue'
-import CardFooter from '@/components/ui/CardFooter.vue'
-</script>
-```
+表单页使用 PrimeVue 的 Panel、InputText、Textarea、Select、Button 等，详见 `src/views/Form.vue`。校验与错误展示在页面内自行实现。
 
 ## 🌍 多语言支持
 
@@ -455,11 +332,12 @@ import { Home, User } from 'lucide-vue-next'
 - **Vue Router** - Vue.js 官方路由管理器
 - **Pinia** - Vue 的状态管理库
 - **Tailwind CSS** - 实用优先的 CSS 框架
+- **PrimeVue** - Vue UI 组件库（Toast、ConfirmDialog、Panel、Button、Select、Breadcrumb、Menu 等）
+- **PrimeIcons** - PrimeVue 配套图标
 - **VueUse** - Vue Composition API 工具集
-- **Lucide Vue Next** - 图标库
+- **Lucide Vue Next** - 图标库（部分页面仍使用）
 - **Vue I18n** - 国际化插件
-- **class-variance-authority** - 组件变体管理
-- **clsx & tailwind-merge** - 类名工具
+- **clsx & tailwind-merge** - 类名工具（`cn()`）
 
 ## 📝 开发规范
 
@@ -505,12 +383,16 @@ themeStore.initTheme()
 ## 🔮 未来计划
 
 - [ ] 集成图表库（Chart.js 或 ECharts）
-- [ ] 添加更多 UI 组件（Dialog、Toast、Pagination 等）
 - [ ] 实现权限管理系统
-- [ ] 添加表单验证库（如 VeeValidate）
-- [ ] Table 组件添加排序、筛选、分页功能
+- [ ] Table 组件增强（排序、导出等）
 - [ ] 性能优化和代码分割
 - [ ] 添加单元测试和 E2E 测试
+
+## 📌 迁移说明（PrimeVue 替代 reka-ui / vue-sonner）
+
+- **UI 库**：已由 shadcn-vue（reka-ui）全部替换为 **PrimeVue**，并移除 **vue-sonner**。
+- **Toast**：使用 PrimeVue 的 ToastService + `@/lib/toast` 封装，用法不变（`toast.success()` 等）。
+- **确认框**：使用 PrimeVue 的 ConfirmDialog + ConfirmationService，在表格删除等场景通过 `useConfirm()` 调用。
 
 ## 📄 许可证
 
