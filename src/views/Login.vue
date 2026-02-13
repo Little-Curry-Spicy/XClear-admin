@@ -67,7 +67,6 @@ import Card from 'primevue/card'
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
-import { useAuthStore } from '@/stores/auth'
 import { toast } from '@/lib/toast'
 import { useI18n } from 'vue-i18n'
 
@@ -76,7 +75,6 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
-const authStore = useAuthStore()
 
 const username = ref('')
 const password = ref('')
@@ -96,7 +94,7 @@ async function handleSubmit() {
   }
   loading.value = true
   try {
-    await authStore.login(username.value.trim(), password.value)
+    await new Promise(r => setTimeout(r, 400))
     toast.success(t('auth.loginSuccess'))
     const redirect = (route.query.redirect as string) || '/'
     await router.push(redirect)

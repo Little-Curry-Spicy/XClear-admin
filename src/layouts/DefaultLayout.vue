@@ -24,6 +24,8 @@ const pageTitle = computed((): string => {
     Form: '表单管理',
     Table: '表格管理',
     Settings: '系统设置',
+    Profile: '个人资料',
+    ChangePassword: '修改密码',
   }
   const name = route.name != null ? String(route.name) : ''
   return titleMap[name] || '仪表盘'

@@ -64,7 +64,7 @@
                 v-tooltip.top="$t('table.editUser', { name: data.name })">
                 {{ $t('common.edit') }}
               </Button>
-              <Button v-if="authStore.hasRole('admin')" text size="small" severity="danger" icon="pi pi-trash" @click="handleDelete(data)"
+              <Button text size="small" severity="danger" icon="pi pi-trash" @click="handleDelete(data)"
                 v-tooltip.top="$t('table.confirmDelete', { name: data.name })">
                 {{ $t('common.delete') }}
               </Button>
@@ -92,15 +92,10 @@ import { useI18n } from 'vue-i18n'
 import { useConfirm } from 'primevue/useconfirm'
 import { toast } from '@/lib/toast'
 import { useDebounceFn } from '@vueuse/core'
-import { usePreferencesStore } from '@/stores/preferences'
-import { useAuthStore } from '@/stores/auth'
 
 const { t } = useI18n()
 const confirm = useConfirm()
-const preferencesStore = usePreferencesStore()
-const authStore = useAuthStore()
-
-const rowsPerPage = computed(() => preferencesStore.table.rowsPerPage)
+const rowsPerPage = ref(10)
 
 interface TableRow {
   id: number

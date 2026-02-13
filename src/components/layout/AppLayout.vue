@@ -98,7 +98,16 @@
           </Breadcrumb>
           <div class="flex items-center gap-2">
             <LocaleToggle />
-            <Button text :label="$t('auth.logout')" icon="pi pi-sign-out" @click="handleLogout" class="text-muted-foreground" />
+            <Button
+              :label="$t('common.currentUser')"
+              icon="pi pi-user"
+              text
+              class="text-muted-foreground"
+              @click="(e: Event) => userMenu?.toggle(e)"
+              aria-haspopup="true"
+              aria-controls="user-menu"
+            />
+            <PrimeMenu id="user-menu" ref="userMenu" :model="userMenuItems" :popup="true" />
           </div>
           </div>
       </header>
@@ -112,16 +121,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Menu, Home, Settings, FileEdit, Table, ChevronLeft } from 'lucide-vue-next'
 import Breadcrumb from 'primevue/breadcrumb'
 import Button from 'primevue/button'
+import PrimeMenu from 'primevue/menu'
 import { cn } from '@/lib/utils'
 import SidebarThemeToggle from '@/components/SidebarThemeToggle.vue'
 import LocaleToggle from '@/components/LocaleToggle.vue'
 import { useSidebarStore } from '@/stores/sidebar'
-import { useAuthStore } from '@/stores/auth'
 import { toast } from '@/lib/toast'
 import { useI18n } from 'vue-i18n'
 
@@ -136,8 +145,15 @@ const props = withDefaults(defineProps<AppLayoutProps>(), {
 const route = useRoute()
 const router = useRouter()
 const sidebarStore = useSidebarStore()
-const authStore = useAuthStore()
 const { t } = useI18n()
+const userMenu = ref<InstanceType<typeof PrimeMenu> | null>(null)
+
+const userMenuItems = [
+  { label: t('profile.title'), icon: 'pi pi-user', command: () => router.push('/profile') },
+  { label: t('changePassword.title'), icon: 'pi pi-lock', command: () => router.push('/profile/password') },
+  { separator: true },
+  { label: t('auth.logout'), icon: 'pi pi-sign-out', command: handleLogout },
+]
 
 const breadcrumbHome = { icon: 'pi pi-home', route: '/' }
 const breadcrumbItems = computed(() => [{ label: props.title }])
@@ -149,12 +165,9 @@ const menuItems = [
   { path: '/table', label: t('menu.table'), icon: Table, roles: ['admin', 'user', 'editor'] },
   { path: '/settings', label: t('menu.settings'), icon: Settings, roles: ['admin'] },
 ]
-const visibleMenuItems = computed(() =>
-  menuItems.filter(item => !item.roles?.length || authStore.hasAnyRole(item.roles))
-)
+const visibleMenuItems = computed(() => menuItems)
 
 function handleLogout() {
-  authStore.logout()
   toast.info(t('auth.logout'))
   router.push('/login')
 }

@@ -31,7 +31,30 @@
     "description": "您访问的页面可能已被移除或地址有误。",
     "backHome": "返回首页"
   },
+  "errorBoundary": {
+    "title": "页面出错了",
+    "retry": "重试",
+    "backHome": "返回首页"
+  },
+  "profile": {
+    "title": "个人资料",
+    "description": "查看和编辑您的账户信息",
+    "name": "姓名",
+    "email": "邮箱",
+    "roles": "角色"
+  },
+  "changePassword": {
+    "title": "修改密码",
+    "description": "请定期更换密码以保障账户安全",
+    "oldPassword": "当前密码",
+    "newPassword": "新密码",
+    "confirmPassword": "确认新密码",
+    "submit": "确认修改",
+    "success": "密码修改成功，请重新登录"
+  },
   "common": {
+    "currentUser": "用户",
+    "guest": "访客",
     "confirm": "确认",
     "cancel": "取消",
     "save": "保存",

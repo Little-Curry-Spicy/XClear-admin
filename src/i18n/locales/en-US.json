@@ -31,7 +31,30 @@
     "description": "The page you're looking for may have been moved or the address is incorrect.",
     "backHome": "Back to Home"
   },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "retry": "Retry",
+    "backHome": "Back to Home"
+  },
+  "profile": {
+    "title": "Profile",
+    "description": "View and edit your account information",
+    "name": "Name",
+    "email": "Email",
+    "roles": "Roles"
+  },
+  "changePassword": {
+    "title": "Change Password",
+    "description": "Change your password regularly to keep your account secure",
+    "oldPassword": "Current password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "submit": "Update",
+    "success": "Password updated. Please log in again."
+  },
   "common": {
+    "currentUser": "User",
+    "guest": "Guest",
     "confirm": "Confirm",
     "cancel": "Cancel",
     "save": "Save",
