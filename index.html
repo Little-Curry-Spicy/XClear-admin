@@ -1,13 +1,64 @@
 <!doctype html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>XClear Admin - 后台管理系统</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XClear Admin - 后台管理系统</title>
+</head>
+
+<body>
+  <div id="app">
+    <div id="app-loading" aria-hidden="true">
+      <div class="app-loading-spinner"></div>
+      <span class="app-loading-text">加载中...</span>
+    </div>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+  <style>
+    #app-loading {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      background: #fafafa;
+      z-index: 9999;
+      transition: opacity 0.2s ease;
+    }
+    #app-loading.app-loaded {
+      pointer-events: none;
+      opacity: 0;
+    }
+    html.dark #app-loading {
+      background: #0a0a0a;
+    }
+    .app-loading-spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid #e4e4e7;
+      border-top-color: #18181b;
+      border-radius: 50%;
+      animation: app-loading-spin 0.8s linear infinite;
+    }
+    html.dark .app-loading-spinner {
+      border-color: #27272a;
+      border-top-color: #fafafa;
+    }
+    .app-loading-text {
+      font-size: 1.125rem;
+      color: #71717a;
+    }
+    html.dark .app-loading-text {
+      color: #a1a1aa;
+    }
+    @keyframes app-loading-spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</body>
+
 </html>

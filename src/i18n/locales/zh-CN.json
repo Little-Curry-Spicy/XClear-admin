@@ -1,4 +1,36 @@
 {
+  "auth": {
+    "login": "登录",
+    "logout": "退出登录",
+    "register": "注册",
+    "username": "用户名",
+    "password": "密码",
+    "email": "邮箱",
+    "emailPlaceholder": "请输入邮箱",
+    "emailRequired": "请输入邮箱",
+    "invalidEmail": "邮箱格式不正确",
+    "confirmPassword": "确认密码",
+    "confirmPasswordPlaceholder": "请再次输入密码",
+    "confirmPasswordRequired": "请确认密码",
+    "passwordMismatch": "两次输入的密码不一致",
+    "passwordMinLength": "密码至少 6 位",
+    "usernamePlaceholder": "请输入用户名",
+    "passwordPlaceholder": "请输入密码",
+    "usernameRequired": "请输入用户名",
+    "passwordRequired": "请输入密码",
+    "loginSuccess": "登录成功",
+    "loginFailed": "登录失败",
+    "registerSuccess": "注册成功",
+    "registerFailed": "注册失败",
+    "hint": "演示：任意账号/密码",
+    "goToRegister": "没有账号？去注册",
+    "goToLogin": "已有账号？去登录"
+  },
+  "error": {
+    "title": "页面不存在",
+    "description": "您访问的页面可能已被移除或地址有误。",
+    "backHome": "返回首页"
+  },
   "common": {
     "confirm": "确认",
     "cancel": "取消",
@@ -81,6 +113,10 @@
     "systemTheme": "跟随系统",
     "lightTheme": "浅色",
     "darkTheme": "深色",
+    "preferences": "用户偏好",
+    "tableRowsPerPage": "表格每页条数",
+    "rtlMode": "从右到左布局 (RTL)",
+    "rtlModeDesc": "适用于阿拉伯语等语言",
     "notifications": "通知设置",
     "emailNotification": "邮件通知",
     "pushNotification": "推送通知",
@@ -149,6 +185,8 @@
     "loading": "加载中...",
     "page": "页",
     "total": "共 {total} 条",
-    "pageSize": "每页显示"
+    "pageSize": "每页显示",
+    "exportCsv": "导出 CSV",
+    "exportSuccess": "导出成功"
   }
 }

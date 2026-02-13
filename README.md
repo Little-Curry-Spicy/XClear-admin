@@ -8,10 +8,14 @@
 - 🎨 **Tailwind CSS** - 实用优先的 CSS 框架
 - 🧩 **PrimeVue** - 功能丰富的 Vue UI 组件库（Toast、ConfirmDialog、Panel、Button、Select 等）
 - 📱 **响应式设计** - 完美适配移动端和桌面端
-- 🌓 **主题切换** - 支持浅色/深色模式
+- 🌓 **主题切换** - 支持浅色/深色/跟随系统
 - 🌍 **多语言支持** - 内置中文和英文，易于扩展
-- 📊 **Table 组件** - 自定义数据表格 + PrimeVue Paginator
-- 📝 **Form 表单** - PrimeVue InputText、Textarea、Select、Panel
+- 🔐 **认证与权限** - 登录/登出、路由守卫、按角色显示菜单与按钮
+- 📡 **请求封装** - axios 封装、自动携带 token、统一错误 Toast、401 跳转登录
+- 📅 **区域格式化** - 日期/数字/货币按当前语言格式化（`@/lib/format`）
+- ⚙️ **用户偏好** - 表格每页条数、RTL 布局等持久化到 localStorage
+- 📤 **表格导出** - 表格页支持导出 CSV
+- 🔄 **RTL** - 设置中可开启从右到左布局（面向阿拉伯语等市场）
 - 📦 **组件化架构** - 基于 SOLID 原则设计，易于扩展
 - 🔥 **TypeScript** - 完整的类型支持
 
@@ -59,7 +63,7 @@ npm install
 npm run dev
 ```
 
-访问 http://localhost:5173 查看应用
+访问 http://localhost:5173 查看应用。首次访问会进入**登录页**，演示环境任意账号/密码即可登录（如 `admin` / `123456`）。
 
 ### 构建生产版本
 
@@ -380,11 +384,30 @@ themeStore.initTheme()
 2. Tailwind 响应式类名是否正确使用
 3. 侧边栏组件状态管理是否正确
 
+## 🔐 认证与权限
+
+- **登录**：`/login`，演示为前端模拟（任意账号/密码），生产需对接后端接口。
+- **路由守卫**：未登录访问需登录页会跳转 `/login?redirect=原路径`；登录后按 `meta.roles` 校验，无权限则跳转首页。
+- **菜单与按钮**：侧栏菜单按 `roles` 过滤（见 `AppLayout.vue`）；表格删除按钮仅 `admin` 角色可见。
+- **Store**：`@/stores/auth` 提供 `login`、`logout`、`hasRole`、`hasAnyRole`。
+
+## 📡 请求封装与格式化
+
+- **请求**：`@/lib/request` 为 axios 实例，已配置请求头携带 `Authorization: Bearer <token>`，响应错误时统一 Toast，401 时清除本地登录态并跳转登录。
+- **环境变量**：可选 `VITE_API_BASE_URL` 配置接口 baseURL。
+- **格式化**：`@/lib/format` 提供 `formatDate`、`formatDateTime`、`formatNumber`、`formatCurrency`，按当前语言（localStorage `locale`）格式化。
+
+## ⚙️ 用户偏好与 RTL
+
+- **Store**：`@/stores/preferences`，持久化到 localStorage。
+- **表格每页条数**：在设置 → 用户偏好中修改，表格页的 DataTable 会使用该值。
+- **RTL**：在设置 → 用户偏好中开启「从右到左布局」，适用于阿拉伯语等；会设置 `document.documentElement.dir="rtl"`。
+
 ## 🔮 未来计划
 
 - [ ] 集成图表库（Chart.js 或 ECharts）
-- [ ] 实现权限管理系统
-- [ ] Table 组件增强（排序、导出等）
+- [ ] 对接真实登录/用户接口，替换模拟登录
+- [ ] Table 列显示/顺序持久化（store 已预留 columnOrder/columnVisibility）
 - [ ] 性能优化和代码分割
 - [ ] 添加单元测试和 E2E 测试
 

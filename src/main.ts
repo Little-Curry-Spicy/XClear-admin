@@ -7,15 +7,14 @@ import ToastService from "primevue/toastservice";
 import ConfirmationService from "primevue/confirmationservice";
 import Tooltip from "primevue/tooltip";
 import { definePreset } from '@primeuix/themes'
-
 import App from "./App.vue";
 import router from "./router";
 import i18n from "./i18n";
 import { useThemeStore } from "./stores/theme";
 import "primeicons/primeicons.css";
-import Lara from '@primeuix/themes/lara'
+import Aura from '@primeuix/themes/aura'
 const app = createApp(App);
-const LaraNoir = definePreset(Lara, {
+const LaraNoir = definePreset(Aura, {
   semantic: {
     primary: {
       50: '{zinc.50}',

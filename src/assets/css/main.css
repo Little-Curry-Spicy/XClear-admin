@@ -1,6 +1,6 @@
 @import "tailwindcss";
+@import "tailwindcss-primeui";
 
-/* Tailwind v4 边框 + 主题色（供 bg-primary、text-muted-foreground 等使用） */
 @theme {
   --color-border: var(--p-slate-200);
   --color-primary: hsl(var(--primary));
@@ -24,6 +24,7 @@
   --background: 0 0% 100%;
   --foreground: 222.2 84% 4.9%;
 }
+
 .dark {
   --p-slate-200: #1e293b;
   --primary: 210 40% 98%;
@@ -35,9 +36,11 @@
   --background: 222.2 84% 4.9%;
   --foreground: 210 40% 98%;
 }
+
 * {
   border-color: var(--p-slate-200);
 }
+
 body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));

@@ -1,25 +1,14 @@
 <template>
   <div class="space-y-6">
-    <Button label="提交" icon="pi pi-check" />
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <h2 class="text-3xl font-bold tracking-tight">{{ $t('table.title') }}</h2>
         <p class="text-muted-foreground">{{ $t('table.description') }}</p>
       </div>
       <div class="flex gap-2">
-        <Button
-          outlined
-          :loading="loading"
-          @click="handleRefresh"
-          v-tooltip.top="$t('table.refresh')"
-        >
-          <i class="pi pi-refresh mr-2" :class="{ 'animate-spin': loading }" />
-          {{ $t('table.refresh') }}
-        </Button>
-        <Button @click="handleAdd" v-tooltip.top="$t('table.addUser')">
-          <i class="pi pi-plus mr-2" />
-          {{ $t('table.add') }}
-        </Button>
+        <Button outlined :loading="loading" @click="handleRefresh" icon="pi pi-refresh" :label="$t('table.refresh')" />
+        <Button @click="handleAdd" icon="pi pi-plus" :label="$t('table.add')" />
+        <Button outlined icon="pi pi-download" @click="handleExportCsv" :label="$t('table.exportCsv')" />
       </div>
     </div>
 
@@ -29,28 +18,12 @@
       </template>
       <div class="flex flex-col gap-4 sm:flex-row">
         <div class="flex-1">
-          <InputText
-            v-model="searchQuery"
-            :placeholder="$t('table.searchPlaceholder')"
-            class="w-full"
-          />
+          <InputText v-model="searchQuery" :placeholder="$t('table.searchPlaceholder')" class="w-full" />
         </div>
-        <Select
-          v-model="filterStatus"
-          :options="statusFilterOptions"
-          option-label="label"
-          option-value="value"
-          :placeholder="$t('table.allStatus')"
-          class="w-full sm:w-[180px]"
-        />
-        <Select
-          v-model="filterRole"
-          :options="roleFilterOptions"
-          option-label="label"
-          option-value="value"
-          :placeholder="$t('table.allRoles')"
-          class="w-full sm:w-[180px]"
-        />
+        <Select v-model="filterStatus" :options="statusFilterOptions" option-label="label" option-value="value"
+          :placeholder="$t('table.allStatus')" class="w-full sm:w-[180px]" />
+        <Select v-model="filterRole" :options="roleFilterOptions" option-label="label" option-value="value"
+          :placeholder="$t('table.allRoles')" class="w-full sm:w-[180px]" />
       </div>
     </Panel>
 
@@ -60,22 +33,12 @@
       </template>
       <p class="text-sm text-muted-foreground mb-4">{{ $t('table.userListDesc') }}</p>
 
-      <DataTable
-        :value="filteredData"
-        :loading="loading"
-        paginator
-        :rows="itemsPerPage"
-        :rows-per-page-options="[10, 20, 30]"
-        :current-page-report-template="$t('table.currentPageReport')"
-        striped-rows
-        responsive-layout="scroll"
-        class="p-datatable-sm"
-      >
+      <DataTable :value="filteredData" :loading="loading" paginator :rows="rowsPerPage"
+        :rows-per-page-options="[10, 20, 30, 50]" :current-page-report-template="$t('table.currentPageReport')" striped-rows
+        responsive-layout="scroll" class="p-datatable-sm">
         <Column field="avatar" :header="$t('table.avatar')" style="width: 4rem">
           <template #body="{ data }">
-            <div
-              class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground"
-            >
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
               {{ data.name.charAt(0) }}
             </div>
           </template>
@@ -90,32 +53,19 @@
         </Column>
         <Column field="status" :header="$t('table.status')">
           <template #body="{ data }">
-            <Tag
-              :value="data.status === 'active' ? $t('table.statusActive') : $t('table.statusInactive')"
-              :severity="data.status === 'active' ? 'success' : 'secondary'"
-            />
+            <Tag :value="data.status === 'active' ? $t('table.statusActive') : $t('table.statusInactive')"
+              :severity="data.status === 'active' ? 'success' : 'secondary'" />
           </template>
         </Column>
         <Column :header="$t('common.operation')" style="width: 12rem">
           <template #body="{ data }">
             <div class="flex gap-2">
-              <Button
-                text
-                size="small"
-                icon="pi pi-pencil"
-                @click="handleEdit(data)"
-                v-tooltip.top="$t('table.editUser', { name: data.name })"
-              >
+              <Button text size="small" icon="pi pi-pencil" @click="handleEdit(data)"
+                v-tooltip.top="$t('table.editUser', { name: data.name })">
                 {{ $t('common.edit') }}
               </Button>
-              <Button
-                text
-                size="small"
-                severity="danger"
-                icon="pi pi-trash"
-                @click="handleDelete(data)"
-                v-tooltip.top="$t('table.confirmDelete', { name: data.name })"
-              >
+              <Button v-if="authStore.hasRole('admin')" text size="small" severity="danger" icon="pi pi-trash" @click="handleDelete(data)"
+                v-tooltip.top="$t('table.confirmDelete', { name: data.name })">
                 {{ $t('common.delete') }}
               </Button>
             </div>
@@ -142,9 +92,15 @@ import { useI18n } from 'vue-i18n'
 import { useConfirm } from 'primevue/useconfirm'
 import { toast } from '@/lib/toast'
 import { useDebounceFn } from '@vueuse/core'
+import { usePreferencesStore } from '@/stores/preferences'
+import { useAuthStore } from '@/stores/auth'
 
 const { t } = useI18n()
 const confirm = useConfirm()
+const preferencesStore = usePreferencesStore()
+const authStore = useAuthStore()
+
+const rowsPerPage = computed(() => preferencesStore.table.rowsPerPage)
 
 interface TableRow {
   id: number
@@ -158,7 +114,6 @@ const loading = ref(false)
 const searchQuery = ref('')
 const filterStatus = ref<string | undefined>(undefined)
 const filterRole = ref<string | undefined>(undefined)
-const itemsPerPage = ref(10)
 const itemToDelete = ref<TableRow | null>(null)
 
 const statusFilterOptions = computed(() => [
@@ -252,5 +207,22 @@ function confirmDelete() {
     toast.success(t('table.deleteSuccess', { name: item.name }))
   }
   itemToDelete.value = null
+}
+
+/** 导出当前筛选结果为 CSV */
+function handleExportCsv() {
+  const cols = ['id', 'name', 'email', 'role', 'status']
+  const headers = ['ID', t('table.name'), t('table.email'), t('table.role'), t('table.status')]
+  const rows = filteredData.value.map(row => cols.map(c => (row as Record<string, unknown>)[c] ?? ''))
+  const BOM = '\uFEFF'
+  const csv = BOM + [headers.join(','), ...rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(','))].join('\n')
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `table-export-${new Date().toISOString().slice(0, 10)}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+  toast.success(t('table.exportSuccess'))
 }
 </script>

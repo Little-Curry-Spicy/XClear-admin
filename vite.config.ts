@@ -7,6 +7,7 @@ import { PrimeVueResolver } from '@primevue/auto-import-resolver';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  assetsInclude: ['**/*.lottie'],
   plugins: [vue(), tailwindcss(), Components({
     resolvers: [PrimeVueResolver()],
   })],

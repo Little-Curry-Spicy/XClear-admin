@@ -1,4 +1,36 @@
 {
+  "auth": {
+    "login": "Login",
+    "logout": "Log out",
+    "register": "Register",
+    "username": "Username",
+    "password": "Password",
+    "email": "Email",
+    "emailPlaceholder": "Enter email",
+    "emailRequired": "Email is required",
+    "invalidEmail": "Invalid email format",
+    "confirmPassword": "Confirm password",
+    "confirmPasswordPlaceholder": "Enter password again",
+    "confirmPasswordRequired": "Please confirm password",
+    "passwordMismatch": "Passwords do not match",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "usernamePlaceholder": "Enter username",
+    "passwordPlaceholder": "Enter password",
+    "usernameRequired": "Username is required",
+    "passwordRequired": "Password is required",
+    "loginSuccess": "Login successful",
+    "loginFailed": "Login failed",
+    "registerSuccess": "Registration successful",
+    "registerFailed": "Registration failed",
+    "hint": "Demo: any username/password",
+    "goToRegister": "No account? Register",
+    "goToLogin": "Already have an account? Log in"
+  },
+  "error": {
+    "title": "Page Not Found",
+    "description": "The page you're looking for may have been moved or the address is incorrect.",
+    "backHome": "Back to Home"
+  },
   "common": {
     "confirm": "Confirm",
     "cancel": "Cancel",
@@ -81,6 +113,10 @@
     "systemTheme": "System",
     "lightTheme": "Light",
     "darkTheme": "Dark",
+    "preferences": "Preferences",
+    "tableRowsPerPage": "Table rows per page",
+    "rtlMode": "Right-to-left layout (RTL)",
+    "rtlModeDesc": "For Arabic and similar languages",
     "notifications": "Notifications",
     "emailNotification": "Email Notification",
     "pushNotification": "Push Notification",
@@ -149,6 +185,8 @@
     "loading": "Loading...",
     "page": "Page",
     "total": "Total {total} items",
-    "pageSize": "Items per page"
+    "pageSize": "Items per page",
+    "exportCsv": "Export CSV",
+    "exportSuccess": "Export successful"
   }
 }

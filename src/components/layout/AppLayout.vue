@@ -59,7 +59,7 @@
 
         <!-- 导航菜单 -->
         <nav class="flex-1 space-y-1 overflow-y-auto p-4">
-          <router-link v-for="item in menuItems" :key="item.path" :to="item.path" @click="sidebarStore.closeMobile()"
+          <router-link v-for="item in visibleMenuItems" :key="item.path" :to="item.path" @click="sidebarStore.closeMobile()"
             :class="cn(
               'flex items-center rounded-lg text-sm font-medium transition-colors',
               sidebarStore.isExpanded ? 'gap-3 px-3 py-2' : 'justify-center px-2 py-2',
@@ -96,7 +96,10 @@
               <span v-else>{{ item.label }}</span>
             </template>
           </Breadcrumb>
-          <LocaleToggle />
+          <div class="flex items-center gap-2">
+            <LocaleToggle />
+            <Button text :label="$t('auth.logout')" icon="pi pi-sign-out" @click="handleLogout" class="text-muted-foreground" />
+          </div>
           </div>
       </header>
 
@@ -110,13 +113,17 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { Menu, Home, Settings, FileEdit, Table, ChevronLeft } from 'lucide-vue-next'
 import Breadcrumb from 'primevue/breadcrumb'
+import Button from 'primevue/button'
 import { cn } from '@/lib/utils'
 import SidebarThemeToggle from '@/components/SidebarThemeToggle.vue'
 import LocaleToggle from '@/components/LocaleToggle.vue'
 import { useSidebarStore } from '@/stores/sidebar'
+import { useAuthStore } from '@/stores/auth'
+import { toast } from '@/lib/toast'
+import { useI18n } from 'vue-i18n'
 
 export interface AppLayoutProps {
   title?: string
@@ -127,18 +134,30 @@ const props = withDefaults(defineProps<AppLayoutProps>(), {
 })
 
 const route = useRoute()
+const router = useRouter()
 const sidebarStore = useSidebarStore()
+const authStore = useAuthStore()
+const { t } = useI18n()
 
 const breadcrumbHome = { icon: 'pi pi-home', route: '/' }
 const breadcrumbItems = computed(() => [{ label: props.title }])
 
-// 菜单项配置
+// 菜单项配置（roles 为空表示不限制）
 const menuItems = [
-  { path: '/', label: '仪表盘', icon: Home },
-  { path: '/form', label: '表单', icon: FileEdit },
-  { path: '/table', label: '表格', icon: Table },
-  { path: '/settings', label: '设置', icon: Settings },
+  { path: '/', label: t('menu.dashboard'), icon: Home, roles: ['admin', 'user'] },
+  { path: '/form', label: t('menu.form'), icon: FileEdit, roles: ['admin', 'user', 'editor'] },
+  { path: '/table', label: t('menu.table'), icon: Table, roles: ['admin', 'user', 'editor'] },
+  { path: '/settings', label: t('menu.settings'), icon: Settings, roles: ['admin'] },
 ]
+const visibleMenuItems = computed(() =>
+  menuItems.filter(item => !item.roles?.length || authStore.hasAnyRole(item.roles))
+)
+
+function handleLogout() {
+  authStore.logout()
+  toast.info(t('auth.logout'))
+  router.push('/login')
+}
 
 // 检查路由是否激活
 const isActive = (path: string) => {
