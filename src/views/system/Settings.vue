@@ -10,10 +10,10 @@
         <template #header>
           <span class="font-semibold">{{ $t('settings.appearance') }}</span>
         </template>
-        <div class="space-y-4">
+        <div class="space-y-6">
           <div>
             <label class="text-sm font-medium">{{ $t('settings.themeMode') }}</label>
-            <p class="text-xs text-muted-foreground mb-2">{{ $t('settings.themeMode') }}</p>
+            <p class="text-xs text-muted-foreground mb-2">{{ $t('settings.themeModeDesc') }}</p>
             <div class="flex flex-wrap gap-2">
               <Button
                 v-for="mode in themeModes"
@@ -23,6 +23,36 @@
                 :outlined="themeStore.themeMode !== mode.value"
                 class="flex-1 min-w-[80px]"
                 @click="themeStore.setThemeMode(mode.value)"
+              />
+            </div>
+          </div>
+          <div>
+            <label class="text-sm font-medium">{{ $t('settings.themeColor') }}</label>
+            <p class="text-xs text-muted-foreground mb-2">{{ $t('settings.themeColorDesc') }}</p>
+            <div class="flex flex-wrap gap-2">
+              <Button
+                v-for="c in themeColors"
+                :key="c.value"
+                :label="c.label"
+                :severity="themeStore.themeColor === c.value ? 'primary' : 'secondary'"
+                :outlined="themeStore.themeColor !== c.value"
+                class="min-w-[80px]"
+                @click="themeStore.setThemeColor(c.value)"
+              />
+            </div>
+          </div>
+          <div>
+            <label class="text-sm font-medium">{{ $t('settings.layoutMode') }}</label>
+            <p class="text-xs text-muted-foreground mb-2">{{ $t('settings.layoutModeDesc') }}</p>
+            <div class="flex flex-wrap gap-2">
+              <Button
+                v-for="lay in layoutModes"
+                :key="lay.value"
+                :label="lay.label"
+                :severity="layoutStore.layoutMode === lay.value ? 'primary' : 'secondary'"
+                :outlined="layoutStore.layoutMode !== lay.value"
+                class="min-w-[100px]"
+                @click="layoutStore.setLayoutMode(lay.value)"
               />
             </div>
           </div>
@@ -56,7 +86,8 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useThemeStore, type ThemeMode } from '@/stores/theme'
+import { useThemeStore, type ThemeMode, type ThemeColor } from '@/stores/theme'
+import { useLayoutStore, type LayoutMode } from '@/stores/layout'
 import { useI18n } from 'vue-i18n'
 import Panel from 'primevue/panel'
 import Button from 'primevue/button'
@@ -64,6 +95,7 @@ import InputSwitch from 'primevue/inputswitch'
 
 const { t } = useI18n()
 const themeStore = useThemeStore()
+const layoutStore = useLayoutStore()
 const emailNotify = ref(false)
 const pushNotify = ref(true)
 
@@ -73,4 +105,14 @@ const themeModes = computed(() => [
   { value: 'dark' as ThemeMode, label: t('settings.darkTheme') },
 ])
 
+const themeColors = computed(() => [
+  { value: 'zinc' as ThemeColor, label: t('settings.themeColorZinc') },
+  { value: 'blue' as ThemeColor, label: t('settings.themeColorBlue') },
+  { value: 'green' as ThemeColor, label: t('settings.themeColorGreen') },
+])
+
+const layoutModes = computed(() => [
+  { value: 'sidebar' as LayoutMode, label: t('settings.layoutSidebar') },
+  { value: 'topnav' as LayoutMode, label: t('settings.layoutTopnav') },
+])
 </script>

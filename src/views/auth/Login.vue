@@ -69,12 +69,12 @@ import Password from 'primevue/password'
 import Button from 'primevue/button'
 import { toast } from '@/lib/toast'
 import { useI18n } from 'vue-i18n'
-
-
+import { useAuthStore } from '@/stores/auth'
 
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
+const authStore = useAuthStore()
 
 const username = ref('')
 const password = ref('')
@@ -95,6 +95,13 @@ async function handleSubmit() {
   loading.value = true
   try {
     await new Promise(r => setTimeout(r, 400))
+    // 演示：根据账号设置角色，admin 为管理员，其余为 user
+    const roles = username.value.toLowerCase() === 'admin' ? ['admin'] : ['user']
+    authStore.setAuth({
+      token: 'mock-token-' + Date.now(),
+      username: username.value.trim(),
+      roles,
+    })
     toast.success(t('auth.loginSuccess'))
     const redirect = (route.query.redirect as string) || '/'
     await router.push(redirect)

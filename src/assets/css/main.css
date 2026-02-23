@@ -37,6 +37,26 @@
   --foreground: 210 40% 98%;
 }
 
+/* 主题色：蓝色 */
+[data-theme-color="blue"]:root {
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+}
+[data-theme-color="blue"].dark {
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+}
+
+/* 主题色：绿色 */
+[data-theme-color="green"]:root {
+  --primary: 142.1 76.2% 36.3%;
+  --primary-foreground: 210 40% 98%;
+}
+[data-theme-color="green"].dark {
+  --primary: 142.1 70.6% 45.3%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+}
+
 * {
   border-color: var(--p-slate-200);
 }

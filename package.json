@@ -13,6 +13,7 @@
     "@vueuse/core": "^14.1.0",
     "axios": "^1.13.5",
     "clsx": "^2.1.1",
+    "echarts": "^6.0.0",
     "lucide-vue-next": "^0.563.0",
     "pinia": "^3.0.4",
     "primeicons": "^7.0.0",
@@ -20,6 +21,7 @@
     "tailwind-merge": "^3.4.0",
     "tailwindcss-primeui": "^0.6.1",
     "vue": "^3.5.27",
+    "vue-echarts": "^8.0.1",
     "vue-i18n": "^11.2.8",
     "vue-router": "^4.6.4",
     "vue3-lottie": "^3.3.1"

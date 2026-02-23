@@ -2,16 +2,20 @@ import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import { useDark } from '@vueuse/core'
 
+const THEME_MODE_KEY = 'theme-mode'
+
 export type ThemeMode = 'light' | 'dark' | 'system'
 
+function getSavedThemeMode(): ThemeMode {
+  const saved = localStorage.getItem(THEME_MODE_KEY) || import.meta.env.VITE_THEME_MODE
+  return saved as ThemeMode
+}
+
 export const useThemeStore = defineStore('theme', () => {
-  const savedTheme = localStorage.getItem('theme-mode') as ThemeMode | null
-  const themeMode = ref<ThemeMode>(
-    savedTheme && (savedTheme === 'light' || savedTheme === 'dark') ? savedTheme : 'system'
-  )
+  const themeMode = ref<ThemeMode>(getSavedThemeMode())
 
   const isDark = useDark({
-    storageKey: 'theme-appearance',
+    storageKey: THEME_MODE_KEY,
     selector: 'html',
     attribute: 'class',
     valueDark: 'dark',
@@ -31,9 +35,9 @@ export const useThemeStore = defineStore('theme', () => {
   const setThemeMode = (mode: ThemeMode) => {
     themeMode.value = mode
     if (mode === 'light' || mode === 'dark') {
-      localStorage.setItem('theme-mode', mode)
+      localStorage.setItem(THEME_MODE_KEY, mode)
     } else {
-      localStorage.removeItem('theme-mode')
+      localStorage.removeItem(THEME_MODE_KEY)
     }
     applyThemeMode()
   }

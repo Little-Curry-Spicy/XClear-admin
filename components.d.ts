@@ -18,6 +18,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     SidebarThemeToggle: typeof import('./src/components/SidebarThemeToggle.vue')['default']
     ThemeToggle: typeof import('./src/components/ThemeToggle.vue')['default']
+    TopNavLayout: typeof import('./src/components/layout/TopNavLayout.vue')['default']
   }
   export interface GlobalDirectives {
     Tooltip: typeof import('primevue/tooltip')['default']

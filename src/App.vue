@@ -33,3 +33,8 @@ setToastInstance(toastService)
 const loadingStore = useLoadingStore()
 
 </script>
+<style>
+.p-panel-content-container {
+ overflow: auto;
+}
+</style>

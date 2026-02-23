@@ -33,6 +33,7 @@
       </template>
       <p class="text-sm text-muted-foreground mb-4">{{ $t('table.userListDesc') }}</p>
 
+      <div class="w-full overflow-x-auto min-w-0">
       <DataTable :value="filteredData" :loading="loading" paginator :rows="rowsPerPage"
         :rows-per-page-options="[10, 20, 30, 50]" :current-page-report-template="$t('table.currentPageReport')" striped-rows
         responsive-layout="scroll" class="p-datatable-sm">
@@ -75,6 +76,7 @@
           <p class="text-center text-muted-foreground py-4">{{ $t('table.noData') || '暂无数据' }}</p>
         </template>
       </DataTable>
+      </div>
     </Panel>
   </div>
 </template>

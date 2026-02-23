@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen">
     <!-- 移动端顶部栏 -->
-    <header class="sticky top-0 z-50 flex h-16 items-center gap-4 border-b  px-4 lg:hidden">
+    <header class="bg-background sticky top-0 z-50 flex h-16 items-center gap-4 border-b  px-4 lg:hidden">
       <button @click="sidebarStore.toggleMobile()"
         class="inline-flex items-center justify-center rounded-md p-2 hover:bg-accent">
         <Menu class="h-6 w-6" />
@@ -22,7 +22,7 @@
 
     <!-- 侧边栏 -->
     <aside :class="cn(
-      'fixed inset-y-0 left-0 z-50 border-r  transition-all duration-300 lg:translate-x-0',
+      'fixed inset-y-0 left-0 bg-background z-50 border-r  transition-all duration-300 lg:translate-x-0',
       sidebarStore.isExpanded ? 'w-64' : 'w-16',
       sidebarStore.isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
     )">
@@ -39,7 +39,7 @@
             enter-to-class="opacity-100" leave-active-class="transition-opacity duration-200"
             leave-from-class="opacity-100" leave-to-class="opacity-0">
             <span v-if="sidebarStore.isExpanded" class="ml-2 flex-1 text-lg font-semibold whitespace-nowrap">
-              XClear Admin
+              {{ appStore.systemName }}
             </span>
           </Transition>
 
@@ -112,7 +112,7 @@
           </div>
       </header>
 
-      <!-- 页面内容 -->
+      <!-- 页面内容：移动端左右无内边距以占满全屏，桌面端保留内边距 -->
       <main class="p-4 lg:p-6">
         <slot />
       </main>
@@ -123,7 +123,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Menu, Home, Settings, FileEdit, Table, ChevronLeft } from 'lucide-vue-next'
+import { Menu, ChevronLeft } from 'lucide-vue-next'
 import Breadcrumb from 'primevue/breadcrumb'
 import Button from 'primevue/button'
 import PrimeMenu from 'primevue/menu'
@@ -131,6 +131,9 @@ import { cn } from '@/lib/utils'
 import SidebarThemeToggle from '@/components/SidebarThemeToggle.vue'
 import LocaleToggle from '@/components/LocaleToggle.vue'
 import { useSidebarStore } from '@/stores/sidebar'
+import { useAppStore } from '@/stores/app'
+import { getMenuItems } from '@/lib/menu'
+import { useAuthStore } from '@/stores/auth'
 import { toast } from '@/lib/toast'
 import { useI18n } from 'vue-i18n'
 
@@ -145,6 +148,8 @@ const props = withDefaults(defineProps<AppLayoutProps>(), {
 const route = useRoute()
 const router = useRouter()
 const sidebarStore = useSidebarStore()
+const appStore = useAppStore()
+const authStore = useAuthStore()
 const { t } = useI18n()
 const userMenu = ref<InstanceType<typeof PrimeMenu> | null>(null)
 
@@ -158,16 +163,10 @@ const userMenuItems = [
 const breadcrumbHome = { icon: 'pi pi-home', route: '/' }
 const breadcrumbItems = computed(() => [{ label: props.title }])
 
-// 菜单项配置（roles 为空表示不限制）
-const menuItems = [
-  { path: '/', label: t('menu.dashboard'), icon: Home, roles: ['admin', 'user'] },
-  { path: '/form', label: t('menu.form'), icon: FileEdit, roles: ['admin', 'user', 'editor'] },
-  { path: '/table', label: t('menu.table'), icon: Table, roles: ['admin', 'user', 'editor'] },
-  { path: '/settings', label: t('menu.settings'), icon: Settings, roles: ['admin'] },
-]
-const visibleMenuItems = computed(() => menuItems)
+const visibleMenuItems = computed(() => authStore.filterMenuByRoles(getMenuItems(t)))
 
 function handleLogout() {
+  authStore.clearAuth()
   toast.info(t('auth.logout'))
   router.push('/login')
 }

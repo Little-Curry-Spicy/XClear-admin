@@ -14,6 +14,10 @@ export const request: AxiosInstance = axios.create({
 })
 
 request.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  const token = localStorage.getItem('xclear-admin-token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
   useLoadingStore().start()
   return config
 })
@@ -28,6 +32,9 @@ request.interceptors.response.use(
     const message = error.response?.data?.message ?? error.response?.data?.error ?? error.message
     const status = error.response?.status
     if (status === 401) {
+      localStorage.removeItem('xclear-admin-token')
+      localStorage.removeItem('xclear-admin-user')
+      localStorage.removeItem('xclear-admin-roles')
       toast.error('未授权', '请重新登录')
       return Promise.reject(error)
     }
