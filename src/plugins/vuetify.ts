@@ -29,16 +29,4 @@ export default createVuetify({
       },
     },
   },
-  defaults: {
-    // 全局统一表单密度（仍可在单个组件上覆盖）
-    VTextField: { density: 'comfortable' },
-    VTextarea: { density: 'comfortable' },
-    VSelect: { density: 'comfortable' },
-    VAutocomplete: { density: 'comfortable' },
-    VCombobox: { density: 'comfortable' },
-    VFileInput: { density: 'comfortable' },
-    VSwitch: { density: 'comfortable' },
-    VCheckbox: { density: 'comfortable' },
-    VRadioGroup: { density: 'comfortable' },
-  },
 })

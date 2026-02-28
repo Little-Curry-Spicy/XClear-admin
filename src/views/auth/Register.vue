@@ -9,7 +9,7 @@
       >
         <div class="auth-visual__shape" aria-hidden="true" />
         <DotLottieVue
-          src="/src/assets/lottie/login.lottie?url"
+          src="/src/assets/lottie/RunningCat.lottie"
           class="auth-visual__lottie"
           autoplay
           loop
@@ -179,7 +179,8 @@ async function onSubmit() {
 
 <style scoped>
 .auth-page {
-  min-height: 100vh;
+  height: 100%;
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -187,13 +188,11 @@ async function onSubmit() {
   overflow: hidden;
 }
 
+/* 渐变背景：随主题变量变化（浅色/深色） */
 .auth-page__bg {
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--background)) 50%);
-}
-.dark .auth-page__bg {
-  background: linear-gradient(135deg, hsl(222.2 47.4% 12%) 0%, hsl(var(--background)) 50%);
 }
 
 .auth-page__content {
@@ -291,6 +290,7 @@ async function onSubmit() {
   }
 }
 
+/* 插画圆形装饰：随主题变量变化 */
 .auth-visual__shape {
   position: absolute;
   width: 85%;
@@ -298,9 +298,6 @@ async function onSubmit() {
   border-radius: 50%;
   background: radial-gradient(circle at 30% 30%, hsl(var(--muted)) 0%, transparent 65%);
   pointer-events: none;
-}
-.dark .auth-visual__shape {
-  background: radial-gradient(circle at 30% 30%, hsl(222.2 47.4% 18%) 0%, transparent 65%);
 }
 
 .auth-visual__lottie {

@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen">
+  <div class="flex h-screen flex-col overflow-hidden">
     <!-- 顶栏：Logo + 导航 + 右侧用户 -->
-    <header class="sticky top-0 z-50 flex h-16 items-center gap-6 border-b bg-background px-4">
+    <header class="z-50 flex h-16 shrink-0 items-center gap-6 border-b bg-background px-4">
       <RouterLink to="/" class="flex shrink-0 items-center gap-2">
         <div class="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
           <span class="text-sm font-bold">XC</span>
@@ -52,8 +52,8 @@
       </div>
     </header>
 
-    <!-- 面包屑 + 主内容 -->
-    <div class="border-b px-4 py-2">
+    <!-- 面包屑 -->
+    <div class="shrink-0 border-b px-4 py-2">
       <v-breadcrumbs :items="breadcrumbItemsWithHome" class="pa-0">
         <template #item="{ item }">
           <RouterLink v-if="item.to" :to="item.to" class="text-muted-foreground hover:text-foreground">
@@ -64,8 +64,8 @@
       </v-breadcrumbs>
     </div>
 
-    <!-- 移动端左右无内边距以占满全屏，桌面端保留内边距 -->
-    <main class="px-0 py-4 lg:px-6 lg:py-6">
+    <!-- 主内容区：仅此区域可滚动 -->
+    <main class="min-h-0 flex-1 overflow-auto px-0 py-4 lg:px-6 lg:py-6">
       <slot />
     </main>
   </div>

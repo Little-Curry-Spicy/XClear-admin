@@ -1,11 +1,9 @@
 <template>
   <v-app>
     <ErrorBoundary>
-      <RouterView v-slot="{ Component, route: r }">
-        <Transition name="fade-slide" mode="out-in">
-          <component :is="Component" :key="r.matched[0]?.path ?? r.path" />
-        </Transition>
-      </RouterView>
+      <div class="h-full min-h-screen overflow-hidden">
+        <RouterView />
+      </div>
     </ErrorBoundary>
 
     <!-- Vuetify 全局 Snackbar 队列（Toast） -->

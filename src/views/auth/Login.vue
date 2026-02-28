@@ -9,7 +9,7 @@
       >
         <div class="login-visual__shape" aria-hidden="true" />
         <DotLottieVue
-          src="/src/assets/lottie/login.lottie?url"
+          src="/src/assets/lottie/RunningCat.lottie"
           class="login-visual__lottie"
           autoplay
           loop
@@ -34,7 +34,6 @@
               :placeholder="$t('auth.usernamePlaceholder')"
               :error-messages="errors.username"
               autocomplete="username"
-              density="comfortable"
               variant="filled"
               hide-details="auto"
               class="w-full"
@@ -47,7 +46,6 @@
               :error-messages="errors.password"
               type="password"
               autocomplete="current-password"
-              density="comfortable"
               variant="filled"
               hide-details="auto"
               class="w-full"
@@ -137,19 +135,21 @@ async function onSubmit() {
 </script>
 
 <style scoped>
-/* 整页：全屏、flex、相对定位以便背景铺满 */
+/* 整页：占满父容器，回退进入时父容器可能暂未撑开，用 min-height 兜底 */
 .login-page {
+  height: 100%;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden;
+  overflow: auto;
 }
 
-/* 渐变背景（浅色柔和灰、深色略深） */
+/* 渐变背景：固定铺满视口，内容滚动时背景不动 */
 .login-page__bg {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--background)) 50%);
 }
