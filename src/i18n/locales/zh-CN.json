@@ -1,6 +1,8 @@
 {
   "auth": {
     "login": "登录",
+    "loginTagline": "欢迎回来，请登录您的账户",
+    "registerTagline": "创建账户，开始使用",
     "logout": "退出登录",
     "register": "注册",
     "username": "用户名",

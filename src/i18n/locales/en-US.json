@@ -1,6 +1,8 @@
 {
   "auth": {
     "login": "Login",
+    "loginTagline": "Welcome back. Sign in to your account.",
+    "registerTagline": "Create your account to get started.",
     "logout": "Log out",
     "register": "Register",
     "username": "Username",

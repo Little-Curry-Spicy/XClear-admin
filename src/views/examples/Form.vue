@@ -6,121 +6,94 @@
     </div>
 
     <div class="grid gap-6 lg:grid-cols-2">
-      <Panel :header="$t('form.basicForm')">
-        <p class="text-sm text-muted-foreground mb-4">{{ $t('form.basicFormDesc') }}</p>
-        <form @submit.prevent="handleSubmit" class="space-y-4">
-          <div class="flex flex-col gap-2">
-            <label for="name">{{ $t('form.name') }} <span class="text-red-500">*</span></label>
-            <InputText
-              id="name"
+      <v-card>
+        <v-card-title>{{ $t('form.basicForm') }}</v-card-title>
+        <v-card-text>
+          <p class="text-sm text-muted-foreground mb-4">{{ $t('form.basicFormDesc') }}</p>
+          <form @submit.prevent="handleSubmit" class="space-y-4">
+            <v-text-field
               v-model="formData.name"
+              :label="$t('form.name')"
               :placeholder="$t('form.namePlaceholder')"
-              :class="{ 'p-invalid': errors.name }"
-              class="w-full"
+              :error-messages="errors.name"
+              density="comfortable"
+              clearable
             />
-            <small v-if="errors.name" class="text-red-500">{{ errors.name }}</small>
-          </div>
-
-          <div class="flex flex-col gap-2">
-            <label for="email">{{ $t('form.email') }} <span class="text-red-500">*</span></label>
-            <InputText
-              id="email"
+            <v-text-field
               v-model="formData.email"
+              :label="$t('form.email')"
               type="email"
               :placeholder="$t('form.emailPlaceholder')"
-              :class="{ 'p-invalid': errors.email }"
-              class="w-full"
+              :error-messages="errors.email"
+              density="comfortable"
+              clearable
             />
-            <small v-if="errors.email" class="text-red-500">{{ errors.email }}</small>
-          </div>
-
-          <div class="flex flex-col gap-2">
-            <label for="phone">{{ $t('form.phone') }}</label>
-            <InputText
-              id="phone"
+            <v-text-field
               v-model="formData.phone"
+              :label="$t('form.phone')"
               type="tel"
               :placeholder="$t('form.phonePlaceholder')"
-              :class="{ 'p-invalid': errors.phone }"
-              class="w-full"
+              :error-messages="errors.phone"
+              density="comfortable"
+              clearable
             />
-            <small v-if="errors.phone" class="text-red-500">{{ errors.phone }}</small>
-          </div>
-
-          <div class="flex flex-col gap-2">
-            <label for="role">{{ $t('form.role') }} <span class="text-red-500">*</span></label>
-            <Select
-              id="role"
+            <v-select
               v-model="formData.role"
-              :options="roleOptions"
-              option-label="label"
-              option-value="value"
+              :label="$t('form.role')"
+              :items="roleOptions"
+              item-title="label"
+              item-value="value"
               :placeholder="$t('form.selectRole')"
-              :class="{ 'p-invalid': errors.role }"
-              class="w-full"
+              :error-messages="errors.role"
+              density="comfortable"
+              clearable
             />
-            <small v-if="errors.role" class="text-red-500">{{ errors.role }}</small>
-          </div>
-
-          <div class="flex flex-col gap-2">
-            <label for="status">{{ $t('form.status') }}</label>
-            <Select
-              id="status"
+            <v-select
               v-model="formData.status"
-              :options="statusOptions"
-              option-label="label"
-              option-value="value"
-              class="w-full"
+              :label="$t('form.status')"
+              :items="statusOptions"
+              item-title="label"
+              item-value="value"
+              density="comfortable"
             />
-            <small v-if="errors.status" class="text-red-500">{{ errors.status }}</small>
-          </div>
-
-          <div class="flex flex-col gap-2">
-            <label for="description">{{ $t('form.description') }}</label>
-            <Textarea
-              id="description"
+            <v-textarea
               v-model="formData.description"
+              :label="$t('form.description')"
               :placeholder="$t('form.descriptionPlaceholder')"
-              :rows="4"
-              :class="{ 'p-invalid': errors.description }"
-              class="w-full"
+              :error-messages="errors.description"
+              rows="4"
+              density="comfortable"
             />
-            <small v-if="errors.description" class="text-red-500">{{ errors.description }}</small>
-          </div>
+            <div class="mt-6 flex justify-end gap-2">
+              <v-btn variant="outlined" @click="handleReset">{{ $t('common.reset') }}</v-btn>
+              <v-btn type="submit" color="primary">{{ $t('common.submit') }}</v-btn>
+            </div>
+          </form>
+        </v-card-text>
+      </v-card>
 
-          <div class="mt-6 flex justify-end gap-2">
-            <Button type="button" severity="secondary" outlined @click="handleReset">
-              {{ $t('common.reset') }}
-            </Button>
-            <Button type="submit">{{ $t('common.submit') }}</Button>
+      <v-card>
+        <v-card-title>{{ $t('form.formData') }}</v-card-title>
+        <v-card-text>
+          <p class="text-sm text-muted-foreground mb-4">{{ $t('form.formDataDesc') }}</p>
+          <div class="space-y-4">
+            <div>
+              <label class="mb-2 block text-sm font-medium">{{ $t('form.currentData') }}</label>
+              <pre class="rounded-md bg-muted p-4 text-sm overflow-auto">{{ JSON.stringify(formData, null, 2) }}</pre>
+            </div>
+            <div v-if="Object.keys(errors).some(key => errors[key as keyof typeof errors])">
+              <label class="mb-2 block text-sm font-medium text-red-500">{{ $t('form.errors') }}</label>
+              <pre class="rounded-md bg-red-50 dark:bg-red-950/30 p-4 text-sm text-red-600 overflow-auto">{{ JSON.stringify(errors, null, 2) }}</pre>
+            </div>
           </div>
-        </form>
-      </Panel>
-
-      <Panel :header="$t('form.formData')">
-        <p class="text-sm text-muted-foreground mb-4">{{ $t('form.formDataDesc') }}</p>
-        <div class="space-y-4">
-          <div>
-            <label class="mb-2 block text-sm font-medium">{{ $t('form.currentData') }}</label>
-            <pre class="rounded-md bg-muted p-4 text-sm overflow-auto">{{ JSON.stringify(formData, null, 2) }}</pre>
-          </div>
-          <div v-if="Object.keys(errors).some(key => errors[key as keyof typeof errors])">
-            <label class="mb-2 block text-sm font-medium text-red-500">{{ $t('form.errors') }}</label>
-            <pre class="rounded-md bg-red-50 dark:bg-red-950/30 p-4 text-sm text-red-600 overflow-auto">{{ JSON.stringify(errors, null, 2) }}</pre>
-          </div>
-        </div>
-      </Panel>
+        </v-card-text>
+      </v-card>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { reactive, computed } from 'vue'
-import Panel from 'primevue/panel'
-import InputText from 'primevue/inputtext'
-import Textarea from 'primevue/textarea'
-import Select from 'primevue/select'
-import Button from 'primevue/button'
 import { useI18n } from 'vue-i18n'
 import { toast } from '@/lib/toast'
 
@@ -183,7 +156,6 @@ const validate = () => {
 
 const handleSubmit = () => {
   if (validate()) {
-    console.log('提交数据:', formData)
     toast.success(t('form.submitSuccess'))
   }
 }

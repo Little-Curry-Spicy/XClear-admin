@@ -1,102 +1,125 @@
 <template>
-  <div class="flex min-h-screen items-center justify-center gap-6 bg-muted/30 p-4 flex-col lg:flex-row">
-    <!-- Lottie 动画：支持 .json 与 .lottie (dotLottie) 格式 -->
-    <div class="shrink-0 w-full max-w-[280px] lg:max-w-[320px] order-2 lg:order-1">
-      <DotLottieVue
-        src="https://assets10.lottiefiles.com/packages/lf20_soCRuE.json"
-        style="height: 280px; width: 280px"
-        class="mx-auto"
-        autoplay
-        loop
-      />
-    </div>
-    <Card class="w-full max-w-md shrink-0 order-1 lg:order-2">
-      <template #title>
-        {{ $t('auth.register') }}
-      </template>
-      <template #content>
-        <form @submit.prevent="handleSubmit" class="space-y-4">
-          <div class="space-y-2">
-            <label for="reg-username" class="text-sm font-medium">{{ $t('auth.username') }}</label>
-            <InputText
-              id="reg-username"
+  <div class="auth-page">
+    <div class="auth-page__bg" aria-hidden="true" />
+    <div class="auth-page__content">
+      <!-- 左侧：插画区 -->
+      <div
+        class="auth-visual"
+        :class="{ 'auth-lottie-dark': isDark }"
+      >
+        <div class="auth-visual__shape" aria-hidden="true" />
+        <DotLottieVue
+          src="/src/assets/lottie/login.lottie?url"
+          class="auth-visual__lottie"
+          autoplay
+          loop
+        />
+      </div>
+
+      <!-- 右侧：表单区 -->
+      <v-card class="auth-card" elevation="2">
+        <div class="auth-card__brand">
+          <div class="auth-card__logo">XC</div>
+          <h1 class="auth-card__title">{{ $t('auth.register') }}</h1>
+          <p class="auth-card__tagline">{{ $t('auth.registerTagline') }}</p>
+        </div>
+        <v-card-text class="auth-card__body">
+          <v-form
+            class="auth-form"
+            @submit.prevent="onSubmit"
+          >
+            <v-text-field
               v-model="username"
+              :label="$t('auth.username')"
               :placeholder="$t('auth.usernamePlaceholder')"
-              class="w-full"
+              :error-messages="errors.username"
               autocomplete="username"
-              :invalid="!!errors.username"
+              density="comfortable"
+              variant="filled"
+              hide-details="auto"
+              clearable
+              class="w-full"
+              @keyup.enter="onSubmit"
             />
-            <small v-if="errors.username" class="text-red-500">{{ errors.username }}</small>
-          </div>
-          <div class="space-y-2">
-            <label for="reg-email" class="text-sm font-medium">{{ $t('auth.email') }}</label>
-            <InputText
-              id="reg-email"
+            <v-text-field
               v-model="email"
-              type="email"
+              :label="$t('auth.email')"
               :placeholder="$t('auth.emailPlaceholder')"
-              class="w-full"
+              :error-messages="errors.email"
+              type="email"
               autocomplete="email"
-              :invalid="!!errors.email"
+              density="comfortable"
+              variant="filled"
+              hide-details="auto"
+              clearable
+              class="w-full"
+              @keyup.enter="onSubmit"
             />
-            <small v-if="errors.email" class="text-red-500">{{ errors.email }}</small>
-          </div>
-          <div class="space-y-2">
-            <label for="reg-password" class="text-sm font-medium">{{ $t('auth.password') }}</label>
-            <Password
-              id="reg-password"
+            <v-text-field
               v-model="password"
+              :label="$t('auth.password')"
               :placeholder="$t('auth.passwordPlaceholder')"
-              class="w-full"
-              input-class="w-full"
-              :feedback="true"
-              toggle-mask
+              :error-messages="errors.password"
+              type="password"
               autocomplete="new-password"
-              :invalid="!!errors.password"
+              density="comfortable"
+              variant="filled"
+              hide-details="auto"
+              clearable
+              class="w-full"
+              @keyup.enter="onSubmit"
             />
-            <small v-if="errors.password" class="text-red-500">{{ errors.password }}</small>
-          </div>
-          <div class="space-y-2">
-            <label for="reg-confirm" class="text-sm font-medium">{{ $t('auth.confirmPassword') }}</label>
-            <Password
-              id="reg-confirm"
+            <v-text-field
               v-model="confirmPassword"
+              :label="$t('auth.confirmPassword')"
               :placeholder="$t('auth.confirmPasswordPlaceholder')"
-              class="w-full"
-              input-class="w-full"
-              :feedback="false"
-              toggle-mask
+              :error-messages="errors.confirmPassword"
+              type="password"
               autocomplete="new-password"
-              :invalid="!!errors.confirmPassword"
-              @keyup.enter="handleSubmit"
+              density="comfortable"
+              variant="filled"
+              hide-details="auto"
+              clearable
+              class="w-full"
+              @keyup.enter="onSubmit"
             />
-            <small v-if="errors.confirmPassword" class="text-red-500">{{ errors.confirmPassword }}</small>
-          </div>
-          <div class="flex flex-col gap-3">
-            <Button type="submit" :loading="loading" :label="$t('auth.register')" class="w-full min-w-[120px]" />
-            <RouterLink to="/login" class="text-center text-sm text-muted-foreground hover:text-foreground">
-              {{ $t('auth.goToLogin') }}
-            </RouterLink>
-          </div>
-        </form>
-      </template>
-    </Card>
+            <v-btn
+              type="submit"
+              block
+              size="large"
+              :loading="loading"
+              color="primary"
+              class="auth-form__submit"
+            >
+              {{ $t('auth.register') }}
+            </v-btn>
+            <div class="text-center mt-2">
+              <RouterLink
+                to="/login"
+                class="text-sm text-muted-foreground hover:text-foreground transition-colors no-underline"
+              >
+                {{ $t('auth.goToLogin') }}
+              </RouterLink>
+            </div>
+          </v-form>
+        </v-card-text>
+      </v-card>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { DotLottieVue } from '@lottiefiles/dotlottie-vue'
-import Card from 'primevue/card'
-import InputText from 'primevue/inputtext'
-import Password from 'primevue/password'
-import Button from 'primevue/button'
 import { toast } from '@/lib/toast'
 import { useI18n } from 'vue-i18n'
+import { useThemeStore } from '@/stores/theme'
 
 const { t } = useI18n()
 const router = useRouter()
+const themeStore = useThemeStore()
+const isDark = computed(() => themeStore.isDark)
 
 const username = ref('')
 const email = ref('')
@@ -139,7 +162,7 @@ function validate(): boolean {
   return true
 }
 
-async function handleSubmit() {
+async function onSubmit() {
   if (!validate()) return
   loading.value = true
   try {
@@ -153,3 +176,147 @@ async function handleSubmit() {
   }
 }
 </script>
+
+<style scoped>
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-page__bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--background)) 50%);
+}
+.dark .auth-page__bg {
+  background: linear-gradient(135deg, hsl(222.2 47.4% 12%) 0%, hsl(var(--background)) 50%);
+}
+
+.auth-page__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 1100px;
+}
+@media (min-width: 1024px) {
+  .auth-page__content {
+    flex-direction: row;
+    gap: 3rem;
+  }
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 28rem;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+@media (min-width: 640px) {
+  .auth-card {
+    max-width: 32rem;
+  }
+}
+
+.auth-card__brand {
+  padding: 2rem 2rem 1rem;
+  text-align: center;
+}
+
+.auth-card__body {
+  padding: 0 2rem 2rem !important;
+  padding-top: 0;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-bottom: 0.5rem;
+}
+
+.auth-form__submit {
+  margin-top: 0.5rem;
+}
+
+.auth-card__logo {
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: hsl(var(--primary-foreground));
+  background: hsl(var(--primary));
+  border-radius: 0.5rem;
+}
+
+.auth-card__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  margin: 0 0 0.5rem;
+}
+
+.auth-card__tagline {
+  font-size: 0.9375rem;
+  color: hsl(var(--muted-foreground));
+  margin: 0;
+}
+
+.auth-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 200px;
+  max-width: 22rem;
+}
+@media (min-width: 1024px) {
+  .auth-visual {
+    min-height: 320px;
+    max-width: 380px;
+  }
+}
+
+.auth-visual__shape {
+  position: absolute;
+  width: 85%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, hsl(var(--muted)) 0%, transparent 65%);
+  pointer-events: none;
+}
+.dark .auth-visual__shape {
+  background: radial-gradient(circle at 30% 30%, hsl(222.2 47.4% 18%) 0%, transparent 65%);
+}
+
+.auth-visual__lottie {
+  position: relative;
+  width: 100%;
+  height: auto;
+  max-height: 240px;
+}
+@media (min-width: 1024px) {
+  .auth-visual__lottie {
+    max-height: 320px;
+  }
+}
+
+.auth-lottie-dark .auth-visual__lottie {
+  filter: brightness(1.15) contrast(1.05);
+  transition: filter 0.2s ease;
+}
+</style>

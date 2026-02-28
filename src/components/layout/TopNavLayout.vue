@@ -29,29 +29,39 @@
       <div class="flex shrink-0 items-center gap-2">
         <SidebarThemeToggle />
         <LocaleToggle />
-        <Button
-          :label="$t('common.currentUser')"
-          icon="pi pi-user"
-          text
-          class="text-muted-foreground"
-          @click="(e: Event) => userMenu?.toggle(e)"
-          aria-haspopup="true"
-          aria-controls="user-menu-top"
-        />
-        <PrimeMenu id="user-menu-top" ref="userMenu" :model="userMenuItems" :popup="true" />
+        <v-menu location="bottom">
+          <template #activator="{ props: menuProps }">
+            <v-btn
+              v-bind="menuProps"
+              variant="text"
+              prepend-icon="mdi-account"
+              class="text-muted-foreground"
+            >
+              {{ $t('common.currentUser') }}
+            </v-btn>
+          </template>
+          <v-list>
+            <template v-for="(action, i) in userMenuItems" :key="i">
+              <v-divider v-if="action.separator" />
+              <v-list-item v-else :prepend-icon="action.icon" @click="action.command?.()">
+                {{ action.label }}
+              </v-list-item>
+            </template>
+          </v-list>
+        </v-menu>
       </div>
     </header>
 
     <!-- 面包屑 + 主内容 -->
     <div class="border-b px-4 py-2">
-      <Breadcrumb :home="breadcrumbHome" :model="breadcrumbItems">
-        <template #item="{ item, props }">
-          <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
-            <a :href="href" v-bind="props.action" @click="navigate">{{ item.label }}</a>
-          </router-link>
-          <span v-else>{{ item.label }}</span>
+      <v-breadcrumbs :items="breadcrumbItemsWithHome" class="pa-0">
+        <template #item="{ item }">
+          <RouterLink v-if="item.to" :to="item.to" class="text-muted-foreground hover:text-foreground">
+            {{ item.title }}
+          </RouterLink>
+          <span v-else>{{ item.title }}</span>
         </template>
-      </Breadcrumb>
+      </v-breadcrumbs>
     </div>
 
     <!-- 移动端左右无内边距以占满全屏，桌面端保留内边距 -->
@@ -62,11 +72,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import Breadcrumb from 'primevue/breadcrumb'
-import Button from 'primevue/button'
-import PrimeMenu from 'primevue/menu'
 import { cn } from '@/lib/utils'
 import SidebarThemeToggle from '@/components/SidebarThemeToggle.vue'
 import LocaleToggle from '@/components/LocaleToggle.vue'
@@ -83,17 +90,18 @@ const router = useRouter()
 const appStore = useAppStore()
 const authStore = useAuthStore()
 const { t } = useI18n()
-const userMenu = ref<InstanceType<typeof PrimeMenu> | null>(null)
 
 const userMenuItems = [
-  { label: t('profile.title'), icon: 'pi pi-user', command: () => router.push('/profile') },
-  { label: t('changePassword.title'), icon: 'pi pi-lock', command: () => router.push('/profile/password') },
+  { label: t('profile.title'), icon: 'mdi-account', command: () => router.push('/profile') },
+  { label: t('changePassword.title'), icon: 'mdi-lock', command: () => router.push('/profile/password') },
   { separator: true },
-  { label: t('auth.logout'), icon: 'pi pi-sign-out', command: () => { authStore.clearAuth(); toast.info(t('auth.logout')); router.push('/login') } },
+  { label: t('auth.logout'), icon: 'mdi-logout', command: () => { authStore.clearAuth(); toast.info(t('auth.logout')); router.push('/login') } },
 ]
 
-const breadcrumbHome = { icon: 'pi pi-home', route: '/' }
-const breadcrumbItems = computed(() => [{ label: route.meta?.title as string || '仪表盘' }])
+const breadcrumbItemsWithHome = computed(() => [
+  { title: 'Home', to: '/' },
+  { title: (route.meta?.title as string) || '仪表盘' },
+])
 
 const visibleMenuItems = computed(() => authStore.filterMenuByRoles(getMenuItems(t)))
 

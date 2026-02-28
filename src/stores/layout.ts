@@ -8,7 +8,7 @@ export type LayoutMode = 'sidebar' | 'topnav'
 
 function getSavedLayoutMode(): LayoutMode {
   const saved = localStorage.getItem(LAYOUT_MODE_KEY) || import.meta.env.VITE_LAYOUT_MODE
-  return saved as LayoutMode
+  return (saved === 'topnav' || saved === 'sidebar' ? saved : 'sidebar') as LayoutMode
 }
 
 export const useLayoutStore = defineStore('layout', () => {

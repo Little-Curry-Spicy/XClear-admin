@@ -1,80 +1,70 @@
 <template>
   <div class="space-y-6">
     <div class="flex items-center gap-4">
-      <Button icon="pi pi-arrow-left" text @click="goBack" />
+      <v-btn icon="mdi-arrow-left" variant="text" @click="goBack" />
       <div>
         <h2 class="text-2xl font-bold tracking-tight">{{ isEdit ? $t('common.edit') : $t('users.addUser') }}</h2>
         <p class="text-muted-foreground">{{ $t('users.description') }}</p>
       </div>
     </div>
 
-    <Panel>
-      <template #header>
-        <span class="font-semibold">{{ $t('form.basicForm') }}</span>
-      </template>
-      <form @submit.prevent="handleSubmit" class="flex max-w-xl flex-col gap-4">
-        <div class="space-y-2">
-          <label for="name" class="text-sm font-medium">{{ $t('table.name') }}</label>
-          <InputText
-            id="name"
+    <v-card>
+      <v-card-title>{{ $t('form.basicForm') }}</v-card-title>
+      <v-card-text>
+        <form @submit.prevent="handleSubmit" class="flex max-w-xl flex-col gap-4">
+          <v-text-field
             v-model="form.name"
+            :label="$t('table.name')"
             :placeholder="$t('form.namePlaceholder')"
-            class="w-full"
-            :invalid="!!errors.name"
+            :error-messages="errors.name"
+            density="comfortable"
+            clearable
           />
-          <small v-if="errors.name" class="text-red-500">{{ errors.name }}</small>
-        </div>
-        <div class="space-y-2">
-          <label for="email" class="text-sm font-medium">{{ $t('table.email') }}</label>
-          <InputText
-            id="email"
+          <v-text-field
             v-model="form.email"
+            :label="$t('table.email')"
             :placeholder="$t('form.emailPlaceholder')"
-            class="w-full"
-            :invalid="!!errors.email"
+            :error-messages="errors.email"
+            density="comfortable"
+            clearable
           />
-          <small v-if="errors.email" class="text-red-500">{{ errors.email }}</small>
-        </div>
-        <div class="space-y-2">
-          <label for="phone" class="text-sm font-medium">{{ $t('form.phone') }}</label>
-          <InputText
-            id="phone"
+          <v-text-field
             v-model="form.phone"
+            :label="$t('form.phone')"
             :placeholder="$t('form.phonePlaceholder')"
-            class="w-full"
+            density="comfortable"
+            clearable
           />
-        </div>
-        <div class="space-y-2">
-          <label for="role" class="text-sm font-medium">{{ $t('table.role') }}</label>
-          <Select
-            id="role"
+          <v-select
             v-model="form.role"
-            :options="roleOptions"
-            option-label="label"
-            option-value="value"
+            :label="$t('table.role')"
+            :items="roleOptions"
+            item-title="label"
+            item-value="value"
             :placeholder="$t('form.selectRole')"
-            class="w-full"
-            :invalid="!!errors.role"
+            :error-messages="errors.role"
+            density="comfortable"
+            clearable
           />
-          <small v-if="errors.role" class="text-red-500">{{ errors.role }}</small>
-        </div>
-        <div class="space-y-2">
-          <label for="status" class="text-sm font-medium">{{ $t('table.status') }}</label>
-          <Select
-            id="status"
+          <v-select
             v-model="form.status"
-            :options="statusOptions"
-            option-label="label"
-            option-value="value"
-            class="w-full"
+            :label="$t('table.status')"
+            :items="statusOptions"
+            item-title="label"
+            item-value="value"
+            density="comfortable"
           />
-        </div>
-        <div class="flex gap-2 pt-2">
-          <Button type="submit" :loading="loading" :label="$t('common.save')" />
-          <Button type="button" severity="secondary" :label="$t('common.cancel')" @click="goBack" />
-        </div>
-      </form>
-    </Panel>
+          <div class="flex gap-2 pt-2">
+            <v-btn type="submit" :loading="loading" color="primary">
+              {{ $t('common.save') }}
+            </v-btn>
+            <v-btn variant="outlined" @click="goBack">
+              {{ $t('common.cancel') }}
+            </v-btn>
+          </div>
+        </form>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 
@@ -82,10 +72,6 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import Button from 'primevue/button'
-import Panel from 'primevue/panel'
-import InputText from 'primevue/inputtext'
-import Select from 'primevue/select'
 import { toast } from '@/lib/toast'
 import { getMockUser, mockUserList, type UserItem } from './mock'
 

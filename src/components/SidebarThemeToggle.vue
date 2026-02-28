@@ -7,7 +7,7 @@
       :class="cn(
         'flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors',
         showLabels ? 'flex-1 px-3 py-2' : 'w-full p-2',
-        themeStore.themeMode === mode.value
+        isActive(mode.value)
           ? 'bg-primary text-primary-foreground shadow-sm'
           : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
       )"
@@ -31,10 +31,17 @@ const { t } = useI18n()
 const themeStore = useThemeStore()
 const sidebarStore = useSidebarStore()
 
-const showLabels = computed(() => sidebarStore.isExpanded)
+const showLabels = computed(() => sidebarStore?.isExpanded ?? true)
+
+/** 按当前实际生效的明暗状态高亮：浅色模式（含「跟随系统」且系统为浅色）高亮浅色，否则高亮深色 */
+function isActive(mode: ThemeMode) {
+  if (mode === 'light') return !themeStore.isDark
+  if (mode === 'dark') return themeStore.isDark
+  return false
+}
 
 const themeModes: Array<{ value: ThemeMode; label: string; icon: string }> = [
-  { value: 'light', label: t('settings.lightTheme'), icon: 'pi pi-sun' },
-  { value: 'dark', label: t('settings.darkTheme'), icon: 'pi pi-moon' },
+  { value: 'light', label: t('settings.lightTheme'), icon: 'mdi mdi-weather-sunny' },
+  { value: 'dark', label: t('settings.darkTheme'), icon: 'mdi mdi-weather-night' },
 ]
 </script>

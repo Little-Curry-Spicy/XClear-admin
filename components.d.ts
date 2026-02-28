@@ -20,7 +20,4 @@ declare module 'vue' {
     ThemeToggle: typeof import('./src/components/ThemeToggle.vue')['default']
     TopNavLayout: typeof import('./src/components/layout/TopNavLayout.vue')['default']
   }
-  export interface GlobalDirectives {
-    Tooltip: typeof import('primevue/tooltip')['default']
-  }
 }

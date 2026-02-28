@@ -1,40 +1,76 @@
 <template>
-  <!-- 请求级 loading：顶部细进度条 -->
-  <div
-    v-show="loadingStore.loading"
-    class="fixed top-0 left-0 right-0 z-10000 h-0.5 bg-primary transition-opacity duration-200"
-    role="progressbar"
-    aria-busy="true"
-  >
-    <div class="h-full w-1/3 bg-primary animate-loading-bar" />
-  </div>
-  <ErrorBoundary>
-    <RouterView v-slot="{ Component, route: r }">
-      <Transition name="fade-slide" mode="out-in">
-        <component :is="Component" :key="r.matched[0]?.path ?? r.path" />
-      </Transition>
-    </RouterView>
-  </ErrorBoundary>
-  <Toast />
-  <ConfirmDialog />
+  <v-app>
+    <ErrorBoundary>
+      <RouterView v-slot="{ Component, route: r }">
+        <Transition name="fade-slide" mode="out-in">
+          <component :is="Component" :key="r.matched[0]?.path ?? r.path" />
+        </Transition>
+      </RouterView>
+    </ErrorBoundary>
+
+    <!-- Vuetify 全局 Snackbar 队列（Toast） -->
+    <v-snackbar-queue
+      :model-value="messages.queue"
+      @update:model-value="messages.setQueue"
+    />
+
+    <!-- 全局确认对话框 -->
+    <v-dialog
+      v-model="confirmStore.visible"
+      max-width="500"
+      persistent
+      @keydown.esc="confirmStore.cancel()"
+    >
+      <v-card>
+        <v-card-title v-if="confirmStore.options?.title">
+          {{ confirmStore.options.title }}
+        </v-card-title>
+        <v-card-text>
+          {{ confirmStore.options?.message }}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" @click="confirmStore.cancel()">
+            {{ confirmStore.options?.cancelText ?? "取消" }}
+          </v-btn>
+          <v-btn
+            :color="confirmStore.options?.confirmColor ?? 'primary'"
+            :loading="confirmStore.loading"
+            @click="confirmStore.confirm()"
+          >
+            {{ confirmStore.options?.confirmText ?? "确定" }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-app>
 </template>
 
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
-import Toast from 'primevue/toast'
-import ConfirmDialog from 'primevue/confirmdialog'
-import { useToast } from 'primevue/usetoast'
-import { setToastInstance } from '@/lib/toast'
-import { useLoadingStore } from '@/stores/loading'
-import ErrorBoundary from '@/components/ErrorBoundary.vue'
+import { watch } from "vue";
+import { RouterView } from "vue-router";
+import { useTheme } from "vuetify";
+import { useMessagesStore } from "@/stores/messages";
+import { useConfirmStore } from "@/stores/confirm";
+import { useThemeStore } from "@/stores/theme";
+import ErrorBoundary from "@/components/ErrorBoundary.vue";
 
-const toastService = useToast()
-setToastInstance(toastService)
-const loadingStore = useLoadingStore()
+const messages = useMessagesStore();
+const confirmStore = useConfirmStore();
+const themeStore = useThemeStore();
+const vuetifyTheme = useTheme();
 
+// 同步现有 theme store 的深色模式到 Vuetify（使用 change 替代已弃用的 global.name）
+watch(
+  () => themeStore.isDark,
+  (isDark) => {
+    vuetifyTheme.change(isDark ? "dark" : "light");
+  },
+  { immediate: true },
+);
 </script>
 <style>
-.p-panel-content-container {
- overflow: auto;
+.v-card-title {
+  padding: 1rem;
 }
 </style>

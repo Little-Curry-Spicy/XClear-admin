@@ -4,35 +4,38 @@
       <h2 class="text-3xl font-bold tracking-tight">{{ $t('profile.title') }}</h2>
       <p class="text-muted-foreground">{{ $t('profile.description') }}</p>
     </div>
-    <Panel>
-      <template #header>
-        <span class="font-semibold">{{ $t('profile.title') }}</span>
-      </template>
-      <div class="grid gap-4 sm:grid-cols-2">
-        <div class="space-y-2">
-          <label class="text-sm font-medium">{{ $t('profile.name') }}</label>
-          <InputText :model-value="userDisplay.name" class="w-full" disabled />
-        </div>
-        <div class="space-y-2">
-          <label class="text-sm font-medium">{{ $t('profile.email') }}</label>
-          <InputText :model-value="userDisplay.email" class="w-full" disabled />
-        </div>
-        <div class="space-y-2 sm:col-span-2">
-          <label class="text-sm font-medium">{{ $t('profile.roles') }}</label>
-          <div class="flex flex-wrap gap-2">
-            <Tag v-for="r in userDisplay.roles" :key="r" :value="r" />
+    <v-card>
+      <v-card-title>{{ $t('profile.title') }}</v-card-title>
+      <v-card-text>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <v-text-field
+            :model-value="userDisplay.name"
+            :label="$t('profile.name')"
+            disabled
+            density="comfortable"
+          />
+          <v-text-field
+            :model-value="userDisplay.email"
+            :label="$t('profile.email')"
+            disabled
+            density="comfortable"
+          />
+          <div class="space-y-2 sm:col-span-2">
+            <label class="text-sm font-medium">{{ $t('profile.roles') }}</label>
+            <div class="flex flex-wrap gap-2">
+              <v-chip v-for="r in userDisplay.roles" :key="r" size="small">
+                {{ r }}
+              </v-chip>
+            </div>
           </div>
         </div>
-      </div>
-    </Panel>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import Panel from 'primevue/panel'
-import InputText from 'primevue/inputtext'
-import Tag from 'primevue/tag'
 
 const { t } = useI18n()
 const userDisplay = { name: t('common.guest'), email: '-', roles: [] as string[] }

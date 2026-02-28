@@ -4,62 +4,49 @@
       <h2 class="text-3xl font-bold tracking-tight">{{ $t('changePassword.title') }}</h2>
       <p class="text-muted-foreground">{{ $t('changePassword.description') }}</p>
     </div>
-    <Panel>
-      <template #header>
-        <span class="font-semibold">{{ $t('changePassword.title') }}</span>
-      </template>
-      <form @submit.prevent="handleSubmit" class="space-y-4 max-w-md">
-        <div class="space-y-2">
-          <label for="old" class="text-sm font-medium">{{ $t('changePassword.oldPassword') }}</label>
-          <Password
+    <v-card>
+      <v-card-title>{{ $t('changePassword.title') }}</v-card-title>
+      <v-card-text>
+        <form @submit.prevent="handleSubmit" class="space-y-4 max-w-md">
+          <v-text-field
             id="old"
             v-model="oldPassword"
-            class="w-full"
-            input-class="w-full"
-            :feedback="false"
-            toggle-mask
-            :invalid="!!errors.oldPassword"
+            :label="$t('changePassword.oldPassword')"
+            type="password"
+            :error-messages="errors.oldPassword"
+            density="comfortable"
+            clearable
           />
-          <small v-if="errors.oldPassword" class="text-red-500">{{ errors.oldPassword }}</small>
-        </div>
-        <div class="space-y-2">
-          <label for="new" class="text-sm font-medium">{{ $t('changePassword.newPassword') }}</label>
-          <Password
+          <v-text-field
             id="new"
             v-model="newPassword"
-            class="w-full"
-            input-class="w-full"
-            :feedback="true"
-            toggle-mask
-            :invalid="!!errors.newPassword"
+            :label="$t('changePassword.newPassword')"
+            type="password"
+            :error-messages="errors.newPassword"
+            density="comfortable"
+            clearable
           />
-          <small v-if="errors.newPassword" class="text-red-500">{{ errors.newPassword }}</small>
-        </div>
-        <div class="space-y-2">
-          <label for="confirm" class="text-sm font-medium">{{ $t('changePassword.confirmPassword') }}</label>
-          <Password
+          <v-text-field
             id="confirm"
             v-model="confirmPassword"
-            class="w-full"
-            input-class="w-full"
-            :feedback="false"
-            toggle-mask
-            :invalid="!!errors.confirmPassword"
+            :label="$t('changePassword.confirmPassword')"
+            type="password"
+            :error-messages="errors.confirmPassword"
+            density="comfortable"
+            clearable
           />
-          <small v-if="errors.confirmPassword" class="text-red-500">{{ errors.confirmPassword }}</small>
-        </div>
-        <Button type="submit" :loading="loading" :label="$t('changePassword.submit')" />
-      </form>
-    </Panel>
+          <v-btn type="submit" :loading="loading" color="primary">
+            {{ $t('changePassword.submit') }}
+          </v-btn>
+        </form>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import Panel from 'primevue/panel'
-import Password from 'primevue/password'
-import Button from 'primevue/button'
 import { useI18n } from 'vue-i18n'
 import { toast } from '@/lib/toast'
 
@@ -92,7 +79,6 @@ function handleSubmit() {
     return
   }
   loading.value = true
-  // 模拟提交，实际对接 PUT /auth/password 等
   setTimeout(() => {
     loading.value = false
     toast.success(t('changePassword.success'))

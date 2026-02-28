@@ -1,12 +1,12 @@
 # XClear Admin - 后台管理系统
 
-一个基于 Vue3 + Vite + TypeScript 构建的现代化后台管理系统，使用 Tailwind CSS 和 **PrimeVue** 组件库，完全适配移动端，支持主题切换。
+一个基于 Vue3 + Vite + TypeScript 构建的现代化后台管理系统，使用 Tailwind CSS 和 **Vuetify 4** 组件库，完全适配移动端，支持主题切换。
 
 ## ✨ 特性
 
 - 🚀 **Vue 3 + Vite + TypeScript** - 使用最新的前端技术栈
 - 🎨 **Tailwind CSS** - 实用优先的 CSS 框架
-- 🧩 **PrimeVue** - 功能丰富的 Vue UI 组件库（Toast、ConfirmDialog、Panel、Button、Select 等）
+- 🧩 **Vuetify 4** - Material Design 风格 Vue UI 组件库（Snackbar、Dialog、Card、Button、Select、Data Table 等）
 - 📱 **响应式设计** - 完美适配移动端和桌面端
 - 🌓 **主题切换** - 支持浅色/深色/跟随系统
 - 🌍 **多语言支持** - 内置中文和英文，易于扩展
@@ -30,7 +30,7 @@ XClear-admin/
 │   ├── assets/          # 静态资源
 │   │   └── css/         # 全局样式
 │   ├── components/      # 组件
-│   │   ├── ui/          # 自定义 Table 等（其余使用 PrimeVue）
+│   │   ├── ui/          # 自定义组件（其余使用 Vuetify）
 │   │   ├── layout/      # 布局组件
 │   │   └── ThemeToggle.vue  # 主题切换组件
 │   ├── layouts/         # 布局页面
@@ -122,7 +122,7 @@ pnpm run preview
 - **light** - 浅色模式
 - **dark** - 深色模式
 
-在 **设置 → 外观设置** 中可切换上述模式。深色模式下 PrimeVue 卡片/面板会随页面一起变暗。
+在 **设置 → 外观设置** 中可切换上述模式。深色模式下 Vuetify 主题会通过 `useTheme()` 与 theme store 同步，卡片与页面一起变暗。
 
 ### 使用方法
 
@@ -165,33 +165,27 @@ themeStore.setThemeMode('dark')
 
 ## 🧩 组件使用
 
-本项目使用 **PrimeVue** 作为 UI 库，Toast 通知由 PrimeVue Toast 提供（已替代原 vue-sonner），确认对话框使用 PrimeVue ConfirmDialog。
+本项目使用 **Vuetify 4** 作为 UI 库，Toast 通知由 `v-snackbar-queue` + Pinia messages store 提供，确认对话框使用全局 `v-dialog` + `@/stores/confirm`。
 
-### Button、Panel、InputText、Select 等
+### Button、Card、TextField、Select 等
 
-直接从 `primevue/*` 按需引入，例如：
+Vuetify 组件通过 `vite-plugin-vuetify` 自动按需引入，直接使用即可：
 
 ```vue
 <template>
-  <Button label="提交" icon="pi pi-check" />
-  <Panel header="标题">
-    内容
-  </Panel>
-  <InputText v-model="value" placeholder="请输入" />
-  <Select v-model="selected" :options="options" option-label="label" option-value="value" />
+  <v-btn color="primary" prepend-icon="mdi-check">提交</v-btn>
+  <v-card>
+    <v-card-title>标题</v-card-title>
+    <v-card-text>内容</v-card-text>
+  </v-card>
+  <v-text-field v-model="value" label="请输入" />
+  <v-select v-model="selected" :items="options" item-title="label" item-value="value" />
 </template>
-
-<script setup lang="ts">
-import Button from 'primevue/button'
-import Panel from 'primevue/panel'
-import InputText from 'primevue/inputtext'
-import Select from 'primevue/select'
-</script>
 ```
 
 ### Toast 通知
 
-通过 `@/lib/toast` 统一调用（底层为 PrimeVue ToastService）：
+通过 `@/lib/toast` 统一调用（底层为 messages store + v-snackbar-queue）：
 
 ```vue
 <script setup lang="ts">
@@ -203,34 +197,30 @@ toast.info('提示信息')
 </script>
 ```
 
-### Table 组件
+### 表格 (v-data-table)
 
 ```vue
 <template>
-  <Table :columns="columns" :data="tableData" :loading="loading">
-    <template #cell-status="{ value }">
-      <span :class="value === 'active' ? 'text-green-600' : 'text-gray-600'">
-        {{ value === 'active' ? '活跃' : '禁用' }}
-      </span>
+  <v-data-table :headers="headers" :items="tableData" :loading="loading">
+    <template #item.status="{ item }">
+      <v-chip :color="item.status === 'active' ? 'success' : 'default'">
+        {{ item.status === 'active' ? '活跃' : '禁用' }}
+      </v-chip>
     </template>
-    <template #cell-operation="{ row }">
-      <Button size="sm">编辑</Button>
+    <template #item.operation="{ item }">
+      <v-btn size="small">编辑</v-btn>
     </template>
-  </Table>
+  </v-data-table>
 </template>
 
 <script setup lang="ts">
-import Table, { type TableColumn } from '@/components/ui/Table.vue'
-import Button from '@/components/ui/Button.vue'
-
-const columns: TableColumn[] = [
-  { key: 'id', title: 'ID' },
-  { key: 'name', title: '姓名' },
-  { key: 'email', title: '邮箱' },
-  { key: 'status', title: '状态' },
-  { key: 'operation', title: '操作' },
+const headers = [
+  { title: 'ID', key: 'id' },
+  { title: '姓名', key: 'name' },
+  { title: '邮箱', key: 'email' },
+  { title: '状态', key: 'status' },
+  { title: '操作', key: 'operation', sortable: false },
 ]
-
 const tableData = [
   { id: 1, name: '张三', email: 'zhangsan@example.com', status: 'active' },
   { id: 2, name: '李四', email: 'lisi@example.com', status: 'inactive' },
@@ -238,17 +228,13 @@ const tableData = [
 </script>
 ```
 
-**Props:**
-- `columns`: `TableColumn[]` - 列配置
-- `data`: `any[]` - 表格数据
-- `loading`: `boolean` - 加载状态
+### 确认对话框
 
-**Slots:**
-- `cell-{columnKey}` - 自定义单元格内容
+通过 `@/lib/confirm` 的 `useConfirm().require({ ... })` 调用，与原有 PrimeVue 用法兼容。
 
 ### Form 表单
 
-表单页使用 PrimeVue 的 Panel、InputText、Textarea、Select、Button 等，详见 `src/views/examples/Form.vue`。校验与错误展示在页面内自行实现。
+表单页使用 Vuetify 的 `v-card`、`v-text-field`、`v-textarea`、`v-select`、`v-btn` 等，详见 `src/views/examples/Form.vue`。
 
 ## 🌍 多语言支持
 
@@ -376,8 +362,8 @@ import { Home, User } from 'lucide-vue-next'
 - **Vue Router** - Vue.js 官方路由管理器
 - **Pinia** - Vue 的状态管理库
 - **Tailwind CSS** - 实用优先的 CSS 框架
-- **PrimeVue** - Vue UI 组件库（Toast、ConfirmDialog、Panel、Button、Select、Breadcrumb、Menu 等）
-- **PrimeIcons** - PrimeVue 配套图标
+- **Vuetify 4** - Vue UI 组件库（Snackbar、Dialog、Card、Button、Select、Data Table、Breadcrumbs、Menu 等）
+- **@mdi/font** - Material Design Icons（Vuetify 配套图标）
 - **VueUse** - Vue Composition API 工具集
 - **Lucide Vue Next** - 图标库（部分页面仍使用）
 - **Vue I18n** - 国际化插件
@@ -451,11 +437,11 @@ themeStore.initTheme()
 - [ ] 性能优化和代码分割
 - [ ] 添加单元测试和 E2E 测试
 
-## 📌 迁移说明（PrimeVue 替代 reka-ui / vue-sonner）
+## 📌 UI 库说明（Vuetify 4）
 
-- **UI 库**：已由 shadcn-vue（reka-ui）全部替换为 **PrimeVue**，并移除 **vue-sonner**。
-- **Toast**：使用 PrimeVue 的 ToastService + `@/lib/toast` 封装，用法不变（`toast.success()` 等）。
-- **确认框**：使用 PrimeVue 的 ConfirmDialog + ConfirmationService，在表格删除等场景通过 `useConfirm()` 调用。
+- **UI 库**：项目使用 **Vuetify 4**，通过 `vite-plugin-vuetify` 按需引入组件。
+- **Toast**：使用 `v-snackbar-queue` + Pinia `@/stores/messages`，通过 `@/lib/toast` 封装（`toast.success()` 等）。
+- **确认框**：使用全局 `v-dialog` + `@/stores/confirm`，通过 `@/lib/confirm` 的 `useConfirm().require()` 调用，兼容原 PrimeVue 用法。
 
 ## 💼 商业化与出售说明
 
@@ -480,7 +466,7 @@ themeStore.initTheme()
 
 ### 出售时的注意点
 
-- **依赖许可**：PrimeVue、Tailwind、Vue 等均为可商用许可（MIT/Apache 等），可放心打包出售。
+- **依赖许可**：Vuetify、Tailwind、Vue 等均为可商用许可（MIT/Apache 等），可放心打包出售。
 - **交付物**：建议包含源码、README、环境变量示例（`.env.example`）、可选部署文档。
 ### 和热销模板相比还缺什么
 

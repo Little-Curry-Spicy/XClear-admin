@@ -1,49 +1,26 @@
 /**
- * Toast 通知封装：基于 PrimeVue ToastService
- * 需在 App.vue 中调用 setToastInstance(useToast()) 初始化
+ * Toast 通知封装：基于 Vuetify v-snackbar-queue + Pinia messages store
  */
-import type { ToastServiceMethods } from 'primevue/toastservice'
-
-let toastInstance: ToastServiceMethods | null = null
-
-export function setToastInstance(instance: ToastServiceMethods) {
-  toastInstance = instance
-}
+import { useMessagesStore } from '@/stores/messages'
 
 export const toast = {
   success: (message: string, description?: string) => {
-    toastInstance?.add({
-      severity: 'success',
-      summary: message,
-      detail: description,
-    })
+    const msg = description ? `${message}\n${description}` : message
+    useMessagesStore().add({ text: msg, color: 'success' })
   },
   error: (message: string, description?: string) => {
-    toastInstance?.add({
-      severity: 'error',
-      summary: message,
-      detail: description,
-    })
+    const msg = description ? `${message}\n${description}` : message
+    useMessagesStore().add({ text: msg, color: 'error' })
   },
   warning: (message: string, description?: string) => {
-    toastInstance?.add({
-      severity: 'warn',
-      summary: message,
-      detail: description,
-    })
+    const msg = description ? `${message}\n${description}` : message
+    useMessagesStore().add({ text: msg, color: 'warning' })
   },
   info: (message: string, description?: string) => {
-    toastInstance?.add({
-      severity: 'info',
-      summary: message,
-      detail: description,
-    })
+    const msg = description ? `${message}\n${description}` : message
+    useMessagesStore().add({ text: msg, color: 'info' })
   },
   loading: (message: string) => {
-    return toastInstance?.add({
-      severity: 'info',
-      summary: message,
-      life: 0,
-    })
+    useMessagesStore().add({ text: message, color: 'info', timeout: 0 })
   },
 }

@@ -3,8 +3,8 @@
     <p class="font-medium text-red-600 dark:text-red-400">{{ $t('errorBoundary.title') }}</p>
     <p class="text-muted-foreground text-sm max-w-md text-center">{{ error.message }}</p>
     <div class="flex gap-2">
-      <Button :label="$t('errorBoundary.retry')" icon="pi pi-refresh" @click="retry" />
-      <Button :label="$t('errorBoundary.backHome')" icon="pi pi-home" outlined @click="goHome" />
+      <v-btn prepend-icon="mdi-refresh" @click="retry">{{ $t('errorBoundary.retry') }}</v-btn>
+      <v-btn prepend-icon="mdi-home" variant="outlined" @click="goHome">{{ $t('errorBoundary.backHome') }}</v-btn>
     </div>
   </div>
   <slot v-else />
@@ -13,7 +13,6 @@
 <script setup lang="ts">
 import { ref, onErrorCaptured } from 'vue'
 import { useRouter } from 'vue-router'
-import Button from 'primevue/button'
 
 const error = ref<Error | null>(null)
 const router = useRouter()

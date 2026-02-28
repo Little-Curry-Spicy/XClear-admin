@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
-
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 const routes: RouteRecordRaw[] = [
   {
     path: '/login',
@@ -86,6 +87,7 @@ const router = createRouter({
 
 // 路由守卫：未登录时访问需登录页则跳转登录
 router.beforeEach((to, _from, next) => {
+  NProgress.start()
   const publicPaths = ['/login', '/register']
   if (publicPaths.some(p => to.path.startsWith(p))) {
     next()
@@ -97,6 +99,10 @@ router.beforeEach((to, _from, next) => {
     return
   }
   next()
+})
+
+router.afterEach(() => {
+  NProgress.done()
 })
 
 export default router

@@ -1,4 +1,27 @@
 ---
 alwaysApply: true
 ---
-一个基于 Vue3 + Vite + TypeScript 构建的现代化后台管理系统，使用 Tailwind CSS 和 **PrimeVue** 组件库，完全适配移动端，支持主题切换。 风格是 `shadcn` 黑白简约分格，你帮我生成的所有组件都要遵循这个原则，尽量使用 `PrimeVue`组件的原始样式，不需要特别添加样式去改变他的风格，我要保证风格统一，可以适当的添加一些提升用户体验的动画，使用 `pnpm` 作为包管理器,创建文件时要考虑移动端
+
+# XClear Admin - Cursor 规则
+
+## 项目概述
+
+- Vue 3 + Vite + TypeScript 后台管理系统
+- UI：**Tailwind CSS v4** + **Vuetify 4**，移动端适配，支持主题切换（浅色/深色/跟随系统）
+- 视觉风格：**黑白简约**（类似 shadcn），保持统一，不随意改 Vuetify 默认样式；可适当加过渡/动画提升体验
+
+## 技术约定
+
+- **包管理**：一律使用 `pnpm`（安装、添加依赖、脚本）
+- **路径别名**：使用 `@/` 指向 `src/`（如 `@/stores/theme`、`@/lib/toast`）
+- **组件**：优先用 Vuetify 4 组件，少写自定义样式覆盖；新增 UI 组件可放在 `src/components/ui/`
+- **布局**：优先用 **flex / grid** 布局，避免 `position: fixed`、`absolute` 做整体布局
+- **状态**：全局状态用 Pinia（`src/stores/`）；Toast 用 `@/lib/toast`，确认框用 `@/lib/confirm` 的 `useConfirm().require()`
+- **国际化**：文案用 `$t('key')` 或 `useI18n()` 的 `t`，key 来自 `src/i18n/locales/`
+- **创建新文件/页面**：考虑移动端（响应式、触摸、窄屏下的布局与交互）
+
+## 代码风格
+
+- 使用 `<script setup lang="ts">`，组合式 API
+- TypeScript 类型写清楚，必要处加注释
+- 遵循项目现有目录结构（views 按功能分子目录、stores 按领域拆分）

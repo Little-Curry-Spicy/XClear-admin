@@ -6,92 +6,100 @@
         <p class="text-muted-foreground">{{ $t('table.description') }}</p>
       </div>
       <div class="flex gap-2">
-        <Button outlined :loading="loading" @click="handleRefresh" icon="pi pi-refresh" :label="$t('table.refresh')" />
-        <Button @click="handleAdd" icon="pi pi-plus" :label="$t('table.add')" />
-        <Button outlined icon="pi pi-download" @click="handleExportCsv" :label="$t('table.exportCsv')" />
+        <v-btn :loading="loading"  prepend-icon="mdi-refresh" @click="handleRefresh">
+          {{ $t('table.refresh') }}
+        </v-btn>
+        <v-btn  prepend-icon="mdi-plus" @click="handleAdd">{{ $t('table.add') }}</v-btn>
+        <v-btn prepend-icon="mdi-download" @click="handleExportCsv">
+          {{ $t('table.exportCsv') }}
+        </v-btn>
       </div>
     </div>
 
-    <Panel>
-      <template #header>
-        <span class="font-semibold">{{ $t('table.searchAndFilter') }}</span>
-      </template>
-      <div class="flex flex-col gap-4 sm:flex-row">
-        <div class="flex-1">
-          <InputText v-model="searchQuery" :placeholder="$t('table.searchPlaceholder')" class="w-full" />
-        </div>
-        <Select v-model="filterStatus" :options="statusFilterOptions" option-label="label" option-value="value"
-          :placeholder="$t('table.allStatus')" class="w-full sm:w-[180px]" />
-        <Select v-model="filterRole" :options="roleFilterOptions" option-label="label" option-value="value"
-          :placeholder="$t('table.allRoles')" class="w-full sm:w-[180px]" />
-      </div>
-    </Panel>
+    <v-card>
+      <v-card-title>{{ $t('table.searchAndFilter') }}</v-card-title>
+      <v-card-text>
+        <v-form>
+          <div class="flex flex-col gap-4 sm:flex-row">
+            <v-text-field
+              v-model="searchQuery"
+              :placeholder="$t('table.searchPlaceholder')"
+              class="flex-1"
+              hide-details
+            />
+            <v-select
+              v-model="filterStatus"
+              :items="statusFilterOptions"
+              item-title="label"
+              item-value="value"
+              :placeholder="$t('table.allStatus')"
+              class="w-full sm:w-[180px]"
+              hide-details
+            />
+            <v-select
+              v-model="filterRole"
+              :items="roleFilterOptions"
+              item-title="label"
+              item-value="value"
+              :placeholder="$t('table.allRoles')"
+              class="w-full sm:w-[180px]"
+              hide-details
+            />
+          </div>
+        </v-form>
+      </v-card-text>
+    </v-card>
 
-    <Panel>
-      <template #header>
-        <span class="font-semibold">{{ $t('table.userList') }}</span>
-      </template>
-      <p class="text-sm text-muted-foreground mb-4">{{ $t('table.userListDesc') }}</p>
-
-      <div class="w-full overflow-x-auto min-w-0">
-      <DataTable :value="filteredData" :loading="loading" paginator :rows="rowsPerPage"
-        :rows-per-page-options="[10, 20, 30, 50]" :current-page-report-template="$t('table.currentPageReport')" striped-rows
-        responsive-layout="scroll" class="p-datatable-sm">
-        <Column field="avatar" :header="$t('table.avatar')" style="width: 4rem">
-          <template #body="{ data }">
+    <v-card>
+      <v-card-title>{{ $t('table.userList') }}</v-card-title>
+      <v-card-text>
+        <p class="text-sm text-muted-foreground mb-4">{{ $t('table.userListDesc') }}</p>
+        <v-data-table
+          :headers="headers"
+          :items="filteredData"
+          :loading="loading"
+          :items-per-page="rowsPerPage"
+          :items-per-page-options="[10, 20, 30, 50]"
+          class="elevation-0"
+        >
+          <template #item.avatar="{ item }">
             <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
-              {{ data.name.charAt(0) }}
+              {{ item.name.charAt(0) }}
             </div>
           </template>
-        </Column>
-        <Column field="id" header="ID" style="width: 4rem" />
-        <Column field="name" :header="$t('table.name')" />
-        <Column field="email" :header="$t('table.email')" />
-        <Column field="role" :header="$t('table.role')">
-          <template #body="{ data }">
-            <Tag :value="getRoleLabel(data.role)" :severity="getRoleSeverity(data.role)" />
+          <template #item.role="{ item }">
+            <v-chip :color="getRoleSeverity(item.role) === 'danger' ? 'error' : getRoleSeverity(item.role) === 'info' ? 'info' : 'default'" size="small">
+              {{ getRoleLabel(item.role) }}
+            </v-chip>
           </template>
-        </Column>
-        <Column field="status" :header="$t('table.status')">
-          <template #body="{ data }">
-            <Tag :value="data.status === 'active' ? $t('table.statusActive') : $t('table.statusInactive')"
-              :severity="data.status === 'active' ? 'success' : 'secondary'" />
+          <template #item.status="{ item }">
+            <v-chip :color="item.status === 'active' ? 'success' : 'default'" size="small">
+              {{ item.status === 'active' ? $t('table.statusActive') : $t('table.statusInactive') }}
+            </v-chip>
           </template>
-        </Column>
-        <Column :header="$t('common.operation')" style="width: 12rem">
-          <template #body="{ data }">
+          <template #item.actions="{ item }">
             <div class="flex gap-2">
-              <Button text size="small" icon="pi pi-pencil" @click="handleEdit(data)"
-                v-tooltip.top="$t('table.editUser', { name: data.name })">
+              <v-btn size="small" variant="text" prepend-icon="mdi-pencil" @click="handleEdit(item)">
                 {{ $t('common.edit') }}
-              </Button>
-              <Button text size="small" severity="danger" icon="pi pi-trash" @click="handleDelete(data)"
-                v-tooltip.top="$t('table.confirmDelete', { name: data.name })">
+              </v-btn>
+              <v-btn size="small" variant="text" color="error" prepend-icon="mdi-delete" @click="handleDelete(item)">
                 {{ $t('common.delete') }}
-              </Button>
+              </v-btn>
             </div>
           </template>
-        </Column>
-        <template #empty>
-          <p class="text-center text-muted-foreground py-4">{{ $t('table.noData') || '暂无数据' }}</p>
-        </template>
-      </DataTable>
-      </div>
-    </Panel>
+          <template #no-data>
+            <p class="text-center text-muted-foreground py-4">{{ $t('table.noData') || '暂无数据' }}</p>
+          </template>
+        </v-data-table>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import Panel from 'primevue/panel'
-import InputText from 'primevue/inputtext'
-import Select from 'primevue/select'
-import Button from 'primevue/button'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
 import { useI18n } from 'vue-i18n'
-import { useConfirm } from 'primevue/useconfirm'
+import { useConfirm } from '@/lib/confirm'
 import { toast } from '@/lib/toast'
 import { useDebounceFn } from '@vueuse/core'
 
@@ -112,6 +120,16 @@ const searchQuery = ref('')
 const filterStatus = ref<string | undefined>(undefined)
 const filterRole = ref<string | undefined>(undefined)
 const itemToDelete = ref<TableRow | null>(null)
+
+const headers = computed(() => [
+  { title: t('table.avatar'), key: 'avatar', width: '4rem', sortable: false },
+  { title: 'ID', key: 'id', width: '4rem' },
+  { title: t('table.name'), key: 'name' },
+  { title: t('table.email'), key: 'email' },
+  { title: t('table.role'), key: 'role' },
+  { title: t('table.status'), key: 'status' },
+  { title: t('common.operation'), key: 'actions', sortable: false, width: '12rem' },
+])
 
 const statusFilterOptions = computed(() => [
   { label: t('table.allStatus'), value: undefined },
@@ -206,13 +224,12 @@ function confirmDelete() {
   itemToDelete.value = null
 }
 
-/** 导出当前筛选结果为 CSV */
 function handleExportCsv() {
   const cols = ['id', 'name', 'email', 'role', 'status']
-  const headers = ['ID', t('table.name'), t('table.email'), t('table.role'), t('table.status')]
+  const headerLabels = ['ID', t('table.name'), t('table.email'), t('table.role'), t('table.status')]
   const rows = filteredData.value.map(row => cols.map(c => (row as Record<string, unknown>)[c] ?? ''))
   const BOM = '\uFEFF'
-  const csv = BOM + [headers.join(','), ...rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(','))].join('\n')
+  const csv = BOM + [headerLabels.join(','), ...rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(','))].join('\n')
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')

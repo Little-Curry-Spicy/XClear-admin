@@ -5,102 +5,89 @@
         <h2 class="text-3xl font-bold tracking-tight">{{ $t('users.title') }}</h2>
         <p class="text-muted-foreground">{{ $t('users.description') }}</p>
       </div>
-      <Button :label="$t('users.addUser')" icon="pi pi-plus" @click="router.push('/users/add')" />
+      <v-btn color="primary" prepend-icon="mdi-plus" @click="router.push('/users/add')">
+        {{ $t('users.addUser') }}
+      </v-btn>
     </div>
 
-    <Panel>
-      <template #header>
-        <span class="font-semibold">{{ $t('table.searchAndFilter') }}</span>
-      </template>
-      <div class="flex flex-col gap-4 sm:flex-row">
-        <InputText
-          v-model="searchQuery"
-          :placeholder="$t('table.searchPlaceholder')"
-          class="flex-1"
-        />
-        <Select
-          v-model="filterStatus"
-          :options="statusOptions"
-          option-label="label"
-          option-value="value"
-          :placeholder="$t('table.allStatus')"
-          class="w-full sm:w-[160px]"
-        />
-        <Select
-          v-model="filterRole"
-          :options="roleOptions"
-          option-label="label"
-          option-value="value"
-          :placeholder="$t('table.allRoles')"
-          class="w-full sm:w-[160px]"
-        />
-      </div>
-    </Panel>
+    <v-card>
+      <v-card-title>{{ $t('table.searchAndFilter') }}</v-card-title>
+      <v-card-text>
+        <div class="flex flex-col gap-4 sm:flex-row">
+          <v-text-field
+            v-model="searchQuery"
+            :placeholder="$t('table.searchPlaceholder')"
+            density="comfortable"
+            clearable
+            hide-details
+            class="flex-1"
+          />
+          <v-select
+            v-model="filterStatus"
+            :items="statusOptions"
+            item-title="label"
+            item-value="value"
+            :placeholder="$t('table.allStatus')"
+            density="comfortable"
+            hide-details
+            class="w-full sm:w-[160px]"
+          />
+          <v-select
+            v-model="filterRole"
+            :items="roleOptions"
+            item-title="label"
+            item-value="value"
+            :placeholder="$t('table.allRoles')"
+            density="comfortable"
+            hide-details
+            class="w-full sm:w-[160px]"
+          />
+        </div>
+      </v-card-text>
+    </v-card>
 
-    <Panel>
-      <template #header>
-        <span class="font-semibold">{{ $t('table.userList') }}</span>
-      </template>
-      <div class="w-full overflow-x-auto min-w-0">
-        <DataTable
-          :value="filteredList"
+    <v-card>
+      <v-card-title>{{ $t('table.userList') }}</v-card-title>
+      <v-card-text>
+        <v-data-table
+          :headers="headers"
+          :items="filteredList"
           :loading="loading"
-          paginator
-          :rows="10"
-          :rows-per-page-options="[10, 20, 30]"
-          striped-rows
-          responsive-layout="scroll"
-          class="p-datatable-sm"
+          :items-per-page="10"
+          :items-per-page-options="[10, 20, 30]"
+          class="elevation-0"
         >
-        <Column field="id" header="ID" style="width: 4rem" />
-        <Column field="name" :header="$t('table.name')">
-          <template #body="{ data }">
-            <RouterLink :to="`/users/${data.id}`" class="font-medium text-primary hover:underline">
-              {{ data.name }}
+          <template #item.name="{ item }">
+            <RouterLink :to="`/users/${item.id}`" class="font-medium text-primary hover:underline">
+              {{ item.name }}
             </RouterLink>
           </template>
-        </Column>
-        <Column field="email" :header="$t('table.email')" />
-        <Column field="role" :header="$t('table.role')">
-          <template #body="{ data }">
-            <Tag :value="getRoleLabel(data.role)" :severity="getRoleSeverity(data.role)" />
+          <template #item.role="{ item }">
+            <v-chip :color="getRoleSeverity(item.role) === 'danger' ? 'error' : getRoleSeverity(item.role) === 'info' ? 'info' : 'default'" size="small">
+              {{ getRoleLabel(item.role) }}
+            </v-chip>
           </template>
-        </Column>
-        <Column field="status" :header="$t('table.status')">
-          <template #body="{ data }">
-            <Tag
-              :value="data.status === 'active' ? $t('table.statusActive') : $t('table.statusInactive')"
-              :severity="data.status === 'active' ? 'success' : 'secondary'"
-            />
+          <template #item.status="{ item }">
+            <v-chip :color="item.status === 'active' ? 'success' : 'default'" size="small">
+              {{ item.status === 'active' ? $t('table.statusActive') : $t('table.statusInactive') }}
+            </v-chip>
           </template>
-        </Column>
-        <Column :header="$t('common.operation')" style="width: 12rem">
-          <template #body="{ data }">
+          <template #item.actions="{ item }">
             <div class="flex gap-2">
-              <Button
-                text
-                size="small"
-                icon="pi pi-pencil"
-                :label="$t('common.edit')"
-                @click="router.push(`/users/${data.id}/edit`)"
-              />
-              <Button
-                text
-                size="small"
-                severity="danger"
-                icon="pi pi-trash"
-                :label="$t('common.delete')"
-                @click="handleDelete(data)"
-              />
+              <v-btn size="small" variant="text" prepend-icon="mdi-pencil" @click="router.push(`/users/${item.id}/edit`)">
+                {{ $t('common.edit') }}
+              </v-btn>
+              <v-btn size="small" variant="text" color="error" prepend-icon="mdi-delete" @click="handleDelete(item)">
+                {{ $t('common.delete') }}
+              </v-btn>
             </div>
           </template>
-        </Column>
-        <template #empty>
-          <p class="py-4 text-center text-muted-foreground">{{ $t('table.noData') }}</p>
-        </template>
-      </DataTable>
-      </div>
-    </Panel>
+          <template #no-data>
+            <p class="py-4 text-center text-muted-foreground">{{ $t('table.noData') }}</p>
+          </template>
+        </v-data-table>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 
@@ -109,14 +96,7 @@ import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useDebounceFn } from '@vueuse/core'
-import { useConfirm } from 'primevue/useconfirm'
-import Panel from 'primevue/panel'
-import InputText from 'primevue/inputtext'
-import Select from 'primevue/select'
-import Button from 'primevue/button'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Tag from 'primevue/tag'
+import { useConfirm } from '@/lib/confirm'
 import { toast } from '@/lib/toast'
 import { mockUserList } from './mock'
 
@@ -128,6 +108,15 @@ const searchQuery = ref('')
 const debouncedQuery = ref('')
 const filterStatus = ref<string | undefined>(undefined)
 const filterRole = ref<string | undefined>(undefined)
+
+const headers = computed(() => [
+  { title: 'ID', key: 'id', width: '4rem' },
+  { title: t('table.name'), key: 'name' },
+  { title: t('table.email'), key: 'email' },
+  { title: t('table.role'), key: 'role' },
+  { title: t('table.status'), key: 'status' },
+  { title: t('common.operation'), key: 'actions', sortable: false, width: '12rem' },
+])
 
 const statusOptions = [
   { label: t('table.allStatus'), value: undefined },
