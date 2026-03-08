@@ -1,12 +1,12 @@
 <template>
   <div class="space-y-6">
-    <div>
+    <div class="page-enter-item" style="--i: 0">
       <h2 class="text-3xl font-bold tracking-tight">{{ $t('form.title') }}</h2>
-      <p class="text-muted-foreground">{{ $t('form.description') }}</p>
+      <p class="mt-1 text-muted-foreground">{{ $t('form.description') }}</p>
     </div>
 
     <div class="grid gap-6 lg:grid-cols-2">
-      <v-card>
+      <v-card class="page-enter-item transition-shadow duration-200 hover:shadow-md" style="--i: 1">
         <v-card-title>{{ $t('form.basicForm') }}</v-card-title>
         <v-card-text>
           <p class="text-sm text-muted-foreground mb-4">{{ $t('form.basicFormDesc') }}</p>
@@ -72,7 +72,7 @@
         </v-card-text>
       </v-card>
 
-      <v-card>
+      <v-card class="page-enter-item transition-shadow duration-200 hover:shadow-md" style="--i: 2">
         <v-card-title>{{ $t('form.formData') }}</v-card-title>
         <v-card-text>
           <p class="text-sm text-muted-foreground mb-4">{{ $t('form.formDataDesc') }}</p>

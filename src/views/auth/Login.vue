@@ -16,8 +16,8 @@
         />
       </div>
 
-      <!-- 右侧：表单区 -->
-      <v-card class="login-card" elevation="2">
+      <!-- 右侧：表单区（入场动画） -->
+      <v-card class="login-card login-card--enter" elevation="2">
         <div class="login-card__brand">
           <div class="login-card__logo">XC</div>
           <h1 class="login-card__title">{{ $t('auth.login') }}</h1>
@@ -58,7 +58,7 @@
               size="large"
               :loading="loading"
               color="primary"
-              class="login-form__submit"
+              class="login-form__submit btn-hover-lift"
             >
               {{ $t('auth.login') }}
             </v-btn>
@@ -287,5 +287,25 @@ async function onSubmit() {
 .login-lottie-dark .login-visual__lottie {
   filter: brightness(1.15) contrast(1.05);
   transition: filter 0.2s ease;
+}
+
+/* 登录卡片入场：淡入 + 上移 */
+.login-card--enter {
+  animation: login-card-enter 0.5s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+@keyframes login-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .login-card--enter {
+    animation: none;
+  }
 }
 </style>

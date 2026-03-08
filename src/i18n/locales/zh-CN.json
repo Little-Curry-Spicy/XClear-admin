@@ -216,6 +216,7 @@
     "showing": "显示第 {from} - {to} 条，共 {total} 条",
     "currentPageReport": "显示第 {first} 到 {last} 条，共 {totalRecords} 条",
     "noData": "暂无数据",
+    "noDataHint": "尝试调整筛选条件或新增数据",
     "loading": "加载中...",
     "page": "页",
     "total": "共 {total} 条",

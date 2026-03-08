@@ -216,6 +216,7 @@
     "showing": "Showing {from} - {to} of {total} items",
     "currentPageReport": "Showing {first} to {last} of {totalRecords} entries",
     "noData": "No Data",
+    "noDataHint": "Try adjusting filters or add new data",
     "loading": "Loading...",
     "page": "Page",
     "total": "Total {total} items",

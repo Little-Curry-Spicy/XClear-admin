@@ -1,16 +1,24 @@
 <template>
   <div class="space-y-6">
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div
+      class="page-enter-item flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+      style="--i: 0"
+    >
       <div>
         <h2 class="text-3xl font-bold tracking-tight">{{ $t('users.title') }}</h2>
-        <p class="text-muted-foreground">{{ $t('users.description') }}</p>
+        <p class="mt-1 text-muted-foreground">{{ $t('users.description') }}</p>
       </div>
-      <v-btn color="primary" prepend-icon="mdi-plus" @click="router.push('/users/add')">
+      <v-btn
+        color="primary"
+        prepend-icon="mdi-plus"
+        class="btn-hover-lift"
+        @click="router.push('/users/add')"
+      >
         {{ $t('users.addUser') }}
       </v-btn>
     </div>
 
-    <v-card>
+    <v-card class="page-enter-item" style="--i: 1">
       <v-card-title>{{ $t('table.searchAndFilter') }}</v-card-title>
       <v-card-text>
         <div class="flex flex-col gap-4 sm:flex-row">
@@ -46,7 +54,7 @@
       </v-card-text>
     </v-card>
 
-    <v-card>
+    <v-card class="page-enter-item" style="--i: 2">
       <v-card-title>{{ $t('table.userList') }}</v-card-title>
       <v-card-text>
         <v-data-table
@@ -83,7 +91,16 @@
             </div>
           </template>
           <template #no-data>
-            <p class="py-4 text-center text-muted-foreground">{{ $t('table.noData') }}</p>
+            <div class="flex flex-col items-center justify-center gap-3 py-12">
+              <div
+                class="flex h-14 w-14 items-center justify-center rounded-full bg-muted text-muted-foreground"
+                aria-hidden
+              >
+                <i class="mdi mdi-account-group text-3xl" />
+              </div>
+              <p class="text-sm font-medium text-foreground">{{ $t('table.noData') }}</p>
+              <p class="text-xs text-muted-foreground">{{ $t('table.noDataHint') }}</p>
+            </div>
           </template>
         </v-data-table>
       </v-card-text>

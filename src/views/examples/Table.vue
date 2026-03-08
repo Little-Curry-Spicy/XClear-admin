@@ -1,22 +1,22 @@
 <template>
   <div class="space-y-6">
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div class="page-enter-item flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between" style="--i: 0">
       <div>
         <h2 class="text-3xl font-bold tracking-tight">{{ $t('table.title') }}</h2>
-        <p class="text-muted-foreground">{{ $t('table.description') }}</p>
+        <p class="mt-1 text-muted-foreground">{{ $t('table.description') }}</p>
       </div>
       <div class="flex gap-2">
-        <v-btn :loading="loading"  prepend-icon="mdi-refresh" @click="handleRefresh">
+        <v-btn :loading="loading" prepend-icon="mdi-refresh" class="btn-hover-lift" @click="handleRefresh">
           {{ $t('table.refresh') }}
         </v-btn>
-        <v-btn  prepend-icon="mdi-plus" @click="handleAdd">{{ $t('table.add') }}</v-btn>
-        <v-btn prepend-icon="mdi-download" @click="handleExportCsv">
+        <v-btn prepend-icon="mdi-plus" class="btn-hover-lift" @click="handleAdd">{{ $t('table.add') }}</v-btn>
+        <v-btn prepend-icon="mdi-download" class="btn-hover-lift" @click="handleExportCsv">
           {{ $t('table.exportCsv') }}
         </v-btn>
       </div>
     </div>
 
-    <v-card>
+    <v-card class="page-enter-item" style="--i: 1">
       <v-card-title>{{ $t('table.searchAndFilter') }}</v-card-title>
       <v-card-text>
         <v-form>
@@ -50,7 +50,7 @@
       </v-card-text>
     </v-card>
 
-    <v-card>
+    <v-card class="page-enter-item" style="--i: 2">
       <v-card-title>{{ $t('table.userList') }}</v-card-title>
       <v-card-text>
         <p class="text-sm text-muted-foreground mb-4">{{ $t('table.userListDesc') }}</p>

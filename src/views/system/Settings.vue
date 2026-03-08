@@ -1,12 +1,12 @@
 <template>
   <div class="space-y-6">
-    <div>
+    <div class="page-enter-item" style="--i: 0">
       <h2 class="text-3xl font-bold tracking-tight">{{ $t('settings.title') }}</h2>
-      <p class="text-muted-foreground">{{ $t('settings.description') }}</p>
+      <p class="mt-1 text-muted-foreground">{{ $t('settings.description') }}</p>
     </div>
 
     <div class="grid gap-6 md:grid-cols-2">
-      <v-card>
+      <v-card class="page-enter-item transition-shadow duration-200 hover:shadow-md" style="--i: 1">
         <v-card-title>{{ $t('settings.appearance') }}</v-card-title>
         <v-card-text>
           <div class="space-y-6">
@@ -62,7 +62,7 @@
         </v-card-text>
       </v-card>
 
-      <v-card>
+      <v-card class="page-enter-item transition-shadow duration-200 hover:shadow-md" style="--i: 2">
         <v-card-title>{{ $t('settings.notifications') }}</v-card-title>
         <v-card-text>
           <div class="space-y-4">

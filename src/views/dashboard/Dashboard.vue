@@ -1,7 +1,13 @@
 <template>
   <div class="space-y-6">
+    <!-- 统计卡片：错峰入场 -->
     <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      <v-card v-for="stat in stats" :key="stat.title">
+      <v-card
+        v-for="(stat, index) in stats"
+        :key="stat.title"
+        class="page-enter-item transition-shadow duration-200 hover:shadow-md"
+        :style="{ '--i': index }"
+      >
         <v-card-text>
           <div class="flex items-center justify-between">
             <span class="text-sm font-medium">{{ stat.title }}</span>
@@ -16,29 +22,30 @@
     </div>
 
     <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-      <v-card class="col-span-4">
-          <v-card-title>收入概览</v-card-title>
+      <v-card class="col-span-4 page-enter-item chart-card" :style="{ '--i': 4 }">
+        <v-card-title>收入概览</v-card-title>
         <v-card-text>
           <div class="h-[300px] w-full">
             <v-chart
-              class="h-full w-full"
+              class="h-full w-full chart-fade-in"
               :option="revenueChartOption"
               autoresize
             />
           </div>
         </v-card-text>
       </v-card>
-      <v-card class="lg:col-span-3 md:col-span-4 col-span-4">
+      <v-card class="lg:col-span-3 md:col-span-4 col-span-4 page-enter-item" :style="{ '--i': 5 }">
         <v-card-title>最近活动</v-card-title>
         <v-card-text>
           <div class="space-y-4">
             <div
-              v-for="activity in recentActivities"
+              v-for="(activity, idx) in recentActivities"
               :key="activity.id"
-              class="flex items-center gap-4"
+              class="activity-item flex items-center gap-4"
+              :style="{ '--ai': idx }"
             >
               <div
-                class="flex h-10 w-10 items-center justify-center rounded-full"
+                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
                 :class="activity.bgColor"
               >
                 <i
@@ -46,7 +53,7 @@
                   class="text-lg"
                 />
               </div>
-              <div class="flex-1">
+              <div class="min-w-0 flex-1">
                 <p class="text-sm font-medium">{{ activity.title }}</p>
                 <p class="text-xs text-muted-foreground">{{ activity.time }}</p>
               </div>
@@ -56,12 +63,12 @@
       </v-card>
     </div>
 
-    <v-card>
+    <v-card class="page-enter-item" :style="{ '--i': 6 }">
       <v-card-title>分类销售统计</v-card-title>
       <v-card-text>
         <div class="h-[280px] w-full">
           <v-chart
-            class="h-full w-full"
+            class="h-full w-full chart-fade-in"
             :option="categoryChartOption"
             autoresize
           />
@@ -281,3 +288,36 @@ const categoryChartOption = computed(() => {
   };
 });
 </script>
+
+<style scoped>
+/* 图表区域在父卡片入场后淡入，避免与 stagger 重叠 */
+.chart-fade-in {
+  animation: chart-fade-in 0.4s cubic-bezier(0.25, 1, 0.5, 1) 0.15s both;
+}
+@keyframes chart-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+/* 活动列表项轻微错峰 */
+.activity-item {
+  animation: activity-item-in 0.35s cubic-bezier(0.25, 1, 0.5, 1) calc(0.1s + var(--ai, 0) * 0.06s) both;
+}
+@keyframes activity-item-in {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chart-fade-in,
+  .activity-item {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+</style>

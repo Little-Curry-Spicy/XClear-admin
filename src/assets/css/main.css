@@ -22,6 +22,15 @@
   --accent-foreground: 222.2 47.4% 11.2%;
   --background: 0 0% 100%;
   --foreground: 222.2 84% 4.9%;
+
+  /* 动效：时长与缓动（ease-out 自然减速） */
+  --duration-instant: 100ms;
+  --duration-fast: 200ms;
+  --duration-normal: 280ms;
+  --duration-slow: 400ms;
+  --duration-page: 500ms;
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dark {
@@ -35,34 +44,101 @@
   --background: 222.2 84% 4.9%;
   --foreground: 210 40% 98%;
 }
-/* 路由切换动画 */
-.fade-slide-enter-active,
-.fade-slide-leave-active {
-  transition: all 0.3s ease;
-}
 
+/* 路由切换：淡入 + 轻微横向位移，退出略快 */
+.fade-slide-enter-active {
+  transition:
+    opacity var(--duration-normal) var(--ease-out-quart),
+    transform var(--duration-normal) var(--ease-out-quart);
+}
+.fade-slide-leave-active {
+  transition:
+    opacity var(--duration-fast) var(--ease-out-quart),
+    transform var(--duration-fast) var(--ease-out-quart);
+}
 .fade-slide-enter-from {
   opacity: 0;
-  transform: translateX(10px);
+  transform: translateX(12px);
 }
-
 .fade-slide-leave-to {
   opacity: 0;
-  transform: translateX(-10px);
+  transform: translateX(-8px);
 }
-
 .fade-slide-enter-to,
 .fade-slide-leave-from {
   opacity: 1;
   transform: translateX(0);
 }
 
+/* 页面内容入场：用于 Dashboard 等卡片/区块的 stagger */
+.page-enter-item {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: page-enter var(--duration-page) var(--ease-out-quart) forwards;
+}
+.page-enter-item[style*="--i"] {
+  animation-delay: calc(var(--i, 0) * 50ms);
+}
+
+@keyframes page-enter {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* 顶部请求 loading 条动画 */
 .animate-loading-bar {
-  animation: loading-bar 1.2s ease-in-out infinite;
+  animation: loading-bar 1.2s var(--ease-out-quart) infinite;
 }
 @keyframes loading-bar {
   0% { transform: translateX(-100%); }
   50% { transform: translateX(200%); }
   100% { transform: translateX(-100%); }
+}
+
+/* 交互反馈：按钮等可点击元素 hover 轻微缩放（可选，由组件 class 控制） */
+.btn-hover-lift {
+  transition: transform var(--duration-instant) var(--ease-out-quart);
+}
+.btn-hover-lift:hover {
+  transform: scale(1.02);
+}
+.btn-hover-lift:active {
+  transform: scale(0.98);
+}
+
+/* 尊重用户“减少动效”偏好 */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-instant: 0.01ms;
+    --duration-fast: 0.01ms;
+    --duration-normal: 0.01ms;
+    --duration-slow: 0.01ms;
+    --duration-page: 0.01ms;
+  }
+  .fade-slide-enter-active,
+  .fade-slide-leave-active {
+    transition-duration: 0.01ms;
+  }
+  .page-enter-item {
+    animation-duration: 0.01ms;
+    animation-delay: 0ms;
+  }
+  .btn-hover-lift:hover,
+  .btn-hover-lift:active {
+    transform: none;
+  }
+  .animate-loading-bar {
+    animation-duration: 0.01ms;
+  }
+}
+
+/* 键盘焦点可见性：与主题一致的高对比度轮廓 */
+:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+.dark :focus-visible {
+  outline-color: hsl(var(--primary));
 }
