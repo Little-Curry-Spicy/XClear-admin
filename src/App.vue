@@ -58,11 +58,11 @@ const confirmStore = useConfirmStore();
 const themeStore = useThemeStore();
 const vuetifyTheme = useTheme();
 
-// 同步现有 theme store 的深色模式到 Vuetify（使用 change 替代已弃用的 global.name）
+// 同步 theme store（明暗 + 主题色）到 Vuetify，作为唯一颜色源
 watch(
-  () => themeStore.isDark,
-  (isDark) => {
-    vuetifyTheme.change(isDark ? "dark" : "light");
+  () => [themeStore.isDark, themeStore.themeColor] as const,
+  () => {
+    themeStore.applyVuetifyTheme(vuetifyTheme);
   },
   { immediate: true },
 );

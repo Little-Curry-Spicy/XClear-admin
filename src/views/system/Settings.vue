@@ -20,7 +20,7 @@
                   :color="themeStore.themeMode === mode.value ? 'primary' : undefined"
                   :variant="themeStore.themeMode === mode.value ? 'flat' : 'outlined'"
                   size="small"
-                  @click="themeStore.setThemeMode(mode.value)"
+                  @click="onThemeModeClick($event, mode.value)"
                 >
                   {{ mode.label }}
                 </v-btn>
@@ -36,7 +36,7 @@
                   :color="themeStore.themeColor === c.value ? 'primary' : undefined"
                   :variant="themeStore.themeColor === c.value ? 'flat' : 'outlined'"
                   size="small"
-                  @click="themeStore.setThemeColor(c.value)"
+                  @click="onThemeColorClick($event, c.value)"
                 >
                   {{ c.label }}
                 </v-btn>
@@ -92,6 +92,7 @@ import { ref, computed } from 'vue'
 import { useThemeStore, type ThemeMode, type ThemeColor } from '@/stores/theme'
 import { useLayoutStore, type LayoutMode } from '@/stores/layout'
 import { useI18n } from 'vue-i18n'
+import { withThemeCircleTransition } from '@/lib/themeTransition'
 
 const { t } = useI18n()
 const themeStore = useThemeStore()
@@ -115,4 +116,28 @@ const layoutModes = computed(() => [
   { value: 'sidebar' as LayoutMode, label: t('settings.layoutSidebar') },
   { value: 'topnav' as LayoutMode, label: t('settings.layoutTopnav') },
 ])
+
+/**
+ * 主题模式切换（圆形扩散）
+ * @param event - 点击事件
+ * @param mode - 目标模式
+ */
+function onThemeModeClick(event: MouseEvent, mode: ThemeMode) {
+  if (themeStore.themeMode === mode) return
+  void withThemeCircleTransition(event, () => {
+    themeStore.setThemeMode(mode)
+  })
+}
+
+/**
+ * 主题色切换（圆形扩散）
+ * @param event - 点击事件
+ * @param color - 目标主题色
+ */
+function onThemeColorClick(event: MouseEvent, color: ThemeColor) {
+  if (themeStore.themeColor === color) return
+  void withThemeCircleTransition(event, () => {
+    themeStore.setThemeColor(color)
+  })
+}
 </script>

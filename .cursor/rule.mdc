@@ -7,21 +7,56 @@ alwaysApply: true
 ## 项目概述
 
 - Vue 3 + Vite + TypeScript 后台管理系统
-- UI：**Tailwind CSS v4** + **Vuetify 4**，移动端适配，支持主题切换（浅色/深色/跟随系统）
-- 视觉风格：**黑白简约**（类似 shadcn），保持统一，不随意改 Vuetify 默认样式；可适当加过渡/动画提升体验
+- UI：**Vuetify 4 为主** + **Tailwind CSS v4（仅布局/间距）**，移动端适配
+- 主题：浅色 / 深色 / 跟随系统；主题色 zinc / blue / green（设置页可切换）
+- 视觉风格：简约、统一；动效克制（路由过渡、页面入场、主题圆形扩散）
+
+## 视觉语言（必须遵守）
+
+### 颜色：Vuetify 为唯一源
+
+- **改主题色 / 明暗色板**：只改 `src/lib/themePalettes.ts`
+- **运行时同步**：`theme` store → `App.vue` 的 `applyVuetifyTheme` → Vuetify `light` / `dark`
+- **Tailwind 语义色**（`bg-primary`、`text-muted-foreground` 等）已桥接 `--v-theme-*`，**禁止**再维护一套独立的 HSL `:root` / `.dark` 变量
+- 页面内自定义颜色优先用 `rgb(var(--v-theme-primary))` 等 Vuetify CSS 变量，或 Tailwind 语义类
+- 图表（Dashboard）从 `--v-theme-*` 读色，勿写死与主题无关的色值
+
+### 组件与样式分工
+
+- **组件**：优先 Vuetify（`v-btn`、`v-card`、`v-text-field`、`v-data-table`、`v-dialog` 等）
+- **Tailwind**：只做 `flex` / `grid` / `gap` / 间距 / 响应式；少用颜色类与 Vuetify 抢活
+- 少写自定义样式覆盖 Vuetify；确需覆盖时用主题变量，避免硬编码白/黑
+
+### 图标：统一 MDI
+
+- 一律 **Material Design Icons**（`mdi-*` + `v-icon` / `prepend-icon`）
+- 菜单图标在 `src/lib/menu.ts` 用字符串（如 `mdi-view-dashboard`）
+- **禁止**再引入 `lucide-vue-next` 或其他图标库
+
+### 主题切换动效
+
+- 明暗 / 主题色切换用 `@/lib/themeTransition` 的 `withThemeCircleTransition`（View Transitions 圆形扩散）
+- 侧栏 `SidebarThemeToggle`、设置页外观选项须走该封装；不支持或 `prefers-reduced-motion` 时直接切主题
+
+### 动效约定
+
+- 时长 / 缓动用 `main.css` 中的 `--duration-*`、`--ease-out-quart` / `--ease-out-expo`
+- 路由：`fade-slide`；区块入场：`page-enter-item` + `--i` stagger
+- 只动画 `transform` / `opacity`；必须支持 `prefers-reduced-motion`
 
 ## 技术约定
 
-- **包管理**：一律使用 `pnpm`（安装、添加依赖、脚本）
-- **路径别名**：使用 `@/` 指向 `src/`（如 `@/stores/theme`、`@/lib/toast`）
-- **组件**：优先用 Vuetify 4 组件，少写自定义样式覆盖；新增 UI 组件可放在 `src/components/ui/`
-- **布局**：优先用 **flex / grid** 布局，避免 `position: fixed`、`absolute` 做整体布局
-- **状态**：全局状态用 Pinia（`src/stores/`）；Toast 用 `@/lib/toast`，确认框用 `@/lib/confirm` 的 `useConfirm().require()`
-- **国际化**：文案用 `$t('key')` 或 `useI18n()` 的 `t`，key 来自 `src/i18n/locales/`
-- **创建新文件/页面**：考虑移动端（响应式、触摸、窄屏下的布局与交互）
+- **包管理**：一律使用 `pnpm`
+- **路径别名**：`@/` → `src/`
+- **布局**：优先 flex / grid，避免用 `fixed` / `absolute` 做整体布局
+- **状态**：Pinia（`src/stores/`）；Toast `@/lib/toast`；确认框 `@/lib/confirm` 的 `useConfirm().require()`
+- **请求**：`@/lib/request`；loading 用 `@/stores/loading`
+- **国际化**：`$t('key')` / `useI18n()`，key 来自 `src/i18n/locales/`
+- **新建页面**：考虑移动端（响应式、触摸、窄屏）
 
 ## 代码风格
 
-- 使用 `<script setup lang="ts">`，组合式 API
-- TypeScript 类型写清楚，必要处加注释
-- 遵循项目现有目录结构（views 按功能分子目录、stores 按领域拆分）
+- `<script setup lang="ts">` + 组合式 API
+- TypeScript 类型写清楚；导出函数、公共 API、工具函数写 JSDoc（`@param` / `@returns`）
+- 遵循现有目录：`views/` 按功能分子目录、`stores/` 按领域拆分
+- 最小改动，不过度设计；不主动加测试除非用户要求

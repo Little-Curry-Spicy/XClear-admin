@@ -12,9 +12,9 @@
           : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
       )"
       :title="mode.label"
-      @click="themeStore.setThemeMode(mode.value)"
+      @click="onSelect($event, mode.value)"
     >
-      <i :class="mode.icon" class="shrink-0" />
+      <v-icon :icon="mode.icon" size="18" class="shrink-0" />
       <span v-if="showLabels" class="whitespace-nowrap">{{ mode.label }}</span>
     </button>
   </div>
@@ -26,6 +26,7 @@ import { useSidebarStore } from '@/stores/sidebar'
 import { computed } from 'vue'
 import { cn } from '@/lib/utils'
 import { useI18n } from 'vue-i18n'
+import { withThemeCircleTransition } from '@/lib/themeTransition'
 
 const { t } = useI18n()
 const themeStore = useThemeStore()
@@ -33,15 +34,30 @@ const sidebarStore = useSidebarStore()
 
 const showLabels = computed(() => sidebarStore?.isExpanded ?? true)
 
-/** 按当前实际生效的明暗状态高亮：浅色模式（含「跟随系统」且系统为浅色）高亮浅色，否则高亮深色 */
+/**
+ * 按当前实际生效的明暗状态高亮
+ * @param mode - 主题模式
+ */
 function isActive(mode: ThemeMode) {
   if (mode === 'light') return !themeStore.isDark
   if (mode === 'dark') return themeStore.isDark
   return false
 }
 
+/**
+ * 带圆形扩散的主题切换
+ * @param event - 点击事件，作为扩散圆心
+ * @param mode - 目标主题
+ */
+function onSelect(event: MouseEvent, mode: ThemeMode) {
+  if (isActive(mode)) return
+  void withThemeCircleTransition(event, () => {
+    themeStore.setThemeMode(mode)
+  })
+}
+
 const themeModes: Array<{ value: ThemeMode; label: string; icon: string }> = [
-  { value: 'light', label: t('settings.lightTheme'), icon: 'mdi mdi-weather-sunny' },
-  { value: 'dark', label: t('settings.darkTheme'), icon: 'mdi mdi-weather-night' },
+  { value: 'light', label: t('settings.lightTheme'), icon: 'mdi-weather-sunny' },
+  { value: 'dark', label: t('settings.darkTheme'), icon: 'mdi-weather-night' },
 ]
 </script>

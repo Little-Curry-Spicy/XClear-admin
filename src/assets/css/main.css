@@ -1,28 +1,22 @@
 @import "tailwindcss";
 
+/*
+ * Tailwind 语义色桥接 Vuetify CSS 变量（--v-theme-* 为 R, G, B 通道）。
+ * 布局可用 bg-background / text-muted-foreground 等，颜色源唯一为 Vuetify。
+ */
 @theme {
-  --color-border: var(--p-slate-200);
-  --color-primary: hsl(var(--primary));
-  --color-primary-foreground: hsl(var(--primary-foreground));
-  --color-muted: hsl(var(--muted));
-  --color-muted-foreground: hsl(var(--muted-foreground));
-  --color-accent: hsl(var(--accent));
-  --color-accent-foreground: hsl(var(--accent-foreground));
-  --color-background: hsl(var(--background));
-  --color-foreground: hsl(var(--foreground));
+  --color-border: rgb(var(--v-theme-border, var(--v-theme-outline, 228, 228, 231)));
+  --color-primary: rgb(var(--v-theme-primary, 24, 24, 27));
+  --color-primary-foreground: rgb(var(--v-theme-on-primary, 250, 250, 250));
+  --color-muted: rgb(var(--v-theme-muted, var(--v-theme-surface-variant, 244, 244, 245)));
+  --color-muted-foreground: rgb(var(--v-theme-muted-foreground, var(--v-theme-on-surface-variant, 113, 113, 122)));
+  --color-accent: rgb(var(--v-theme-accent, var(--v-theme-surface-variant, 244, 244, 245)));
+  --color-accent-foreground: rgb(var(--v-theme-accent-foreground, 24, 24, 27));
+  --color-background: rgb(var(--v-theme-background, 255, 255, 255));
+  --color-foreground: rgb(var(--v-theme-on-background, 9, 9, 11));
 }
 
 :root {
-  --p-slate-200: #e2e8f0;
-  --primary: 222.2 47.4% 11.2%;
-  --primary-foreground: 210 40% 98%;
-  --muted: 210 40% 96.1%;
-  --muted-foreground: 215.4 16.3% 46.9%;
-  --accent: 210 40% 96.1%;
-  --accent-foreground: 222.2 47.4% 11.2%;
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
-
   /* 动效：时长与缓动（ease-out 自然减速） */
   --duration-instant: 100ms;
   --duration-fast: 200ms;
@@ -31,18 +25,6 @@
   --duration-page: 500ms;
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.dark {
-  --p-slate-200: #1e293b;
-  --primary: 210 40% 98%;
-  --primary-foreground: 222.2 47.4% 11.2%;
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
 }
 
 /* 路由切换：淡入 + 轻微横向位移，退出略快 */
@@ -97,7 +79,7 @@
   100% { transform: translateX(-100%); }
 }
 
-/* 交互反馈：按钮等可点击元素 hover 轻微缩放（可选，由组件 class 控制） */
+/* 交互反馈：按钮等可点击元素 hover 轻微缩放 */
 .btn-hover-lift {
   transition: transform var(--duration-instant) var(--ease-out-quart);
 }
@@ -134,11 +116,49 @@
   }
 }
 
-/* 键盘焦点可见性：与主题一致的高对比度轮廓 */
+/* 键盘焦点：仅给按钮/链接等，表单交给 Vuetify */
 :focus-visible {
-  outline: 2px solid hsl(var(--primary));
+  outline: 2px solid rgb(var(--v-theme-primary) / 0.55);
   outline-offset: 2px;
 }
-.dark :focus-visible {
-  outline-color: hsl(var(--primary));
+.v-field__input:focus-visible,
+.v-field :focus-visible,
+.v-selection-control :focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+}
+
+/* filled 输入框：软化焦点底线 */
+.v-field--variant-filled .v-field__outline::before {
+  border-bottom-color: rgb(var(--v-theme-on-surface) / 0.2) !important;
+}
+.v-field--variant-filled .v-field__outline::after {
+  opacity: 0.65;
+  border-bottom-width: 1.5px !important;
+  border-bottom-color: rgb(var(--v-theme-on-surface) / 0.45) !important;
+}
+.v-theme--dark .v-field--variant-filled.v-field--focused .v-field__outline::after {
+  opacity: 0.8;
+  border-bottom-color: rgb(var(--v-theme-on-surface) / 0.55) !important;
+}
+
+/* 主题圆形扩散：接管默认 view-transition，避免闪屏 */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 9999;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
 }

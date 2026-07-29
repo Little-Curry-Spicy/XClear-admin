@@ -21,7 +21,7 @@
               : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
           )"
         >
-          <component :is="item.icon" class="h-4 w-4 shrink-0" />
+          <v-icon :icon="item.icon" size="16" class="shrink-0" />
           {{ item.label }}
         </RouterLink>
       </nav>

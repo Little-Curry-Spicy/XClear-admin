@@ -103,27 +103,24 @@ use([
   GridComponent,
 ]);
 
-/** 从 CSS 变量读取当前主题色，使图表与系统（shadcn 风格）一致 */
+/** 从 Vuetify CSS 变量读取主题色，使图表与系统一致 */
 function getChartTheme() {
-  const el = document.documentElement;
-  const style = getComputedStyle(el);
-  const getVar = (name: string) => style.getPropertyValue(name).trim();
-  const primary = `hsl(${getVar("--primary")})`;
-  const foreground = `hsl(${getVar("--foreground")})`;
-  const mutedForeground = `hsl(${getVar("--muted-foreground")})`;
-  const background = `hsl(${getVar("--background")})`;
-  const border = "hsl(220 13% 91%)"; // zinc-200 浅色；深色下用 muted
-  const borderDark = "hsl(215 20% 65%)";
-  const isDark = el.classList.contains("dark");
+  const el = document.documentElement
+  const style = getComputedStyle(el)
+  /** @param name - CSS 变量名（含 --） @param fallback - 回退色 */
+  const rgb = (name: string, fallback: string) => {
+    const v = style.getPropertyValue(name).trim()
+    return v ? `rgb(${v})` : fallback
+  }
+  const isDark = el.classList.contains('dark')
   return {
-    primary,
-    foreground,
-    mutedForeground,
-    background,
-    border: isDark ? borderDark : border,
-    // 第二条线/柱用稍浅的主色或灰色
-    secondary: isDark ? "hsl(215 20% 55%)" : "hsl(220 9% 46%)",
-  };
+    primary: rgb('--v-theme-primary', isDark ? '#fafafa' : '#18181b'),
+    foreground: rgb('--v-theme-on-background', isDark ? '#fafafa' : '#09090b'),
+    mutedForeground: rgb('--v-theme-muted-foreground', isDark ? '#a1a1aa' : '#71717a'),
+    background: rgb('--v-theme-surface', isDark ? '#18181b' : '#ffffff'),
+    border: rgb('--v-theme-outline', isDark ? '#3f3f46' : '#e4e4e7'),
+    secondary: rgb('--v-theme-secondary', isDark ? '#a1a1aa' : '#71717a'),
+  }
 }
 
 const themeStore = useThemeStore();

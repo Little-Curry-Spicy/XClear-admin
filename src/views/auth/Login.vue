@@ -151,10 +151,18 @@ async function onSubmit() {
 .login-page__bg {
   position: fixed;
   inset: 0;
-  background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--background)) 50%);
+  background: linear-gradient(
+    135deg,
+    rgb(var(--v-theme-muted)) 0%,
+    rgb(var(--v-theme-background)) 50%
+  );
 }
 .dark .login-page__bg {
-  background: linear-gradient(135deg, hsl(222.2 47.4% 12%) 0%, hsl(var(--background)) 50%);
+  background: linear-gradient(
+    135deg,
+    rgb(var(--v-theme-surface)) 0%,
+    rgb(var(--v-theme-background)) 50%
+  );
 }
 
 /* 内容区：左右分栏（大屏）或上下堆叠（小屏） */
@@ -224,21 +232,21 @@ async function onSubmit() {
   justify-content: center;
   font-weight: 700;
   font-size: 1.125rem;
-  color: hsl(var(--primary-foreground));
-  background: hsl(var(--primary));
+  color: rgb(var(--v-theme-on-primary));
+  background: rgb(var(--v-theme-primary));
   border-radius: 0.5rem;
 }
 
 .login-card__title {
   font-size: 1.75rem;
   font-weight: 700;
-  color: hsl(var(--foreground));
+  color: rgb(var(--v-theme-on-background));
   margin: 0 0 0.5rem;
 }
 
 .login-card__tagline {
   font-size: 0.9375rem;
-  color: hsl(var(--muted-foreground));
+  color: rgb(var(--v-theme-muted-foreground));
   margin: 0;
 }
 
@@ -264,11 +272,11 @@ async function onSubmit() {
   width: 85%;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, hsl(var(--muted)) 0%, transparent 65%);
+  background: radial-gradient(circle at 30% 30%, rgb(var(--v-theme-muted)) 0%, transparent 65%);
   pointer-events: none;
 }
 .dark .login-visual__shape {
-  background: radial-gradient(circle at 30% 30%, hsl(222.2 47.4% 18%) 0%, transparent 65%);
+  background: radial-gradient(circle at 30% 30%, rgb(var(--v-theme-surface-variant)) 0%, transparent 65%);
 }
 
 .login-visual__lottie {

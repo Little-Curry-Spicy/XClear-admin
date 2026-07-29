@@ -8,7 +8,7 @@
         class="inline-flex items-center justify-center rounded-md p-2 hover:bg-accent"
         @click="sidebarStore?.toggleMobile?.()"
       >
-        <Menu class="h-6 w-6" />
+        <v-icon icon="mdi-menu" size="24" />
       </button>
       <div class="min-w-0 flex-1">
         <h1 class="truncate text-lg font-semibold">{{ title }}</h1>
@@ -68,7 +68,7 @@
               :title="!(sidebarStore?.isExpanded ?? true) ? item.label : undefined"
               @click="sidebarStore?.closeMobile?.()"
             >
-              <component :is="item.icon" class="h-5 w-5 shrink-0" />
+              <v-icon :icon="item.icon" size="20" class="shrink-0" />
               <Transition
                 enter-active-class="transition-opacity duration-200"
                 enter-from-class="opacity-0"
@@ -109,11 +109,10 @@
               :title="(sidebarStore?.isExpanded ?? true) ? '收缩侧边栏' : '展开侧边栏'"
               @click="sidebarStore?.toggle?.()"
             >
-              <ChevronLeft
-                :class="cn(
-                  'h-5 w-5 transition-transform duration-300',
-                  !(sidebarStore?.isExpanded ?? true) && 'rotate-180'
-                )"
+              <v-icon
+                :icon="!(sidebarStore?.isExpanded ?? true) ? 'mdi-chevron-right' : 'mdi-chevron-left'"
+                size="20"
+                class="transition-transform duration-300"
               />
             </button>
             <div class="flex min-w-0 flex-1 items-center justify-between">
@@ -180,7 +179,6 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Menu, ChevronLeft } from 'lucide-vue-next'
 import { cn } from '@/lib/utils'
 import SidebarThemeToggle from '@/components/SidebarThemeToggle.vue'
 import LocaleToggle from '@/components/LocaleToggle.vue'
@@ -248,7 +246,7 @@ const isActive = (path: string) => {
 <style scoped>
 /* 主内容有滚动时，顶栏毛玻璃 */
 .app-layout-header--blur {
-  background: hsl(var(--background) / 0.55);
+  background: rgb(var(--v-theme-background) / 0.55);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }

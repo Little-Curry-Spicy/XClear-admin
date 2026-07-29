@@ -1,28 +1,33 @@
 /**
- * 侧栏/顶栏共用菜单配置
- * 动态菜单时可由 API 数据合并或覆盖
+ * 侧栏/顶栏共用菜单配置（图标统一为 MDI 字符串，与 Vuetify 一致）
  */
-import type { Component } from 'vue'
-import { Home, Settings, FileEdit, Table, Users } from 'lucide-vue-next'
-
 export interface MenuItem {
   path: string
   label: string
-  icon: Component
+  /** Material Design Icons 名称，如 mdi-home */
+  icon: string
   roles?: string[]
 }
 
+/**
+ * 获取静态菜单项（可按角色过滤）
+ * @param t - i18n 翻译函数
+ */
 export function getMenuItems(t: (key: string) => string): MenuItem[] {
   return [
-    { path: '/', label: t('menu.dashboard'), icon: Home, roles: ['admin', 'user'] },
-    { path: '/users', label: t('menu.users'), icon: Users, roles: ['admin', 'user', 'editor'] },
-    { path: '/form', label: t('menu.form'), icon: FileEdit, roles: ['admin', 'user', 'editor'] },
-    { path: '/table', label: t('menu.table'), icon: Table, roles: ['admin', 'user', 'editor'] },
-    { path: '/settings', label: t('menu.settings'), icon: Settings, roles: ['admin'] },
+    { path: '/', label: t('menu.dashboard'), icon: 'mdi-view-dashboard', roles: ['admin', 'user'] },
+    { path: '/users', label: t('menu.users'), icon: 'mdi-account-group', roles: ['admin', 'user', 'editor'] },
+    { path: '/form', label: t('menu.form'), icon: 'mdi-form-select', roles: ['admin', 'user', 'editor'] },
+    { path: '/table', label: t('menu.table'), icon: 'mdi-table', roles: ['admin', 'user', 'editor'] },
+    { path: '/settings', label: t('menu.settings'), icon: 'mdi-cog', roles: ['admin'] },
   ]
 }
 
-/** 根据当前用户角色过滤菜单（当前为前端写死角色，可改为从 auth store 取） */
+/**
+ * 根据当前用户角色过滤菜单（占位；实际过滤在 authStore.filterMenuByRoles）
+ * @param items - 菜单列表
+ * @param _roles - 角色列表
+ */
 export function filterMenuByRole(items: MenuItem[], _roles: string[]): MenuItem[] {
   return items
 }
